@@ -1,7 +1,9 @@
 package com.store.pdvapi.service;
 
+import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
 import com.store.pdvapi.dto.mesa.MesaResponse;
+import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.exception.MesaNaoEncontradaException;
 import com.store.pdvapi.mapper.MesaMapper;
 import com.store.pdvapi.model.Mesa;
@@ -22,8 +24,17 @@ public class MesaService {
     }
 
     public MesaResponse criar(CriarMesaRequest request) {
+        String numero = validarNumero(request.getNumero());
+
+        if (repository.buscarPorNumero(numero) != null) {
+            throw new RuntimeException("Já existe uma mesa com número: " + numero);
+        }
+
         Mesa mesa = mapper.toEntity(request);
+        mesa.setNumero(numero);
+        mesa.setStatus(StatusMesa.LIVRE);
         repository.salvar(mesa);
+
         return mapper.toResponse(mesa);
     }
 
@@ -41,6 +52,61 @@ public class MesaService {
         }
 
         return responses;
+    }
+
+    public MesaResponse abrir(Long id, AtualizarStatusMesaRequest request) {
+        Mesa mesa = buscarOuFalhar(id);
+
+        if (mesa.getStatus() != StatusMesa.LIVRE) {
+            throw new RuntimeException("Mesa precisa estar livre para ser ocupada");
+        }
+
+        mesa.setStatus(StatusMesa.OCUPADA);
+        atualizarObservacao(mesa, request);
+        repository.atualizar(mesa);
+
+        return mapper.toResponse(mesa);
+    }
+
+    public MesaResponse fechar(Long id, AtualizarStatusMesaRequest request) {
+        Mesa mesa = buscarOuFalhar(id);
+
+        if (mesa.getStatus() != StatusMesa.OCUPADA) {
+            throw new RuntimeException("Somente mesas ocupadas podem ser fechadas");
+        }
+
+        mesa.setStatus(StatusMesa.FECHADA);
+        atualizarObservacao(mesa, request);
+        repository.atualizar(mesa);
+
+        return mapper.toResponse(mesa);
+    }
+
+    public MesaResponse liberar(Long id, AtualizarStatusMesaRequest request) {
+        Mesa mesa = buscarOuFalhar(id);
+
+        if (mesa.getStatus() == StatusMesa.LIVRE) {
+            throw new RuntimeException("Mesa já está livre");
+        }
+
+        mesa.setStatus(StatusMesa.LIVRE);
+        atualizarObservacao(mesa, request);
+        repository.atualizar(mesa);
+
+        return mapper.toResponse(mesa);
+    }
+
+    private void atualizarObservacao(Mesa mesa, AtualizarStatusMesaRequest request) {
+        if (request != null && request.getObservacao() != null) {
+            mesa.setObservacao(request.getObservacao());
+        }
+    }
+
+    private String validarNumero(String numero) {
+        if (numero == null || numero.trim().isEmpty()) {
+            throw new RuntimeException("Número da mesa é obrigatório");
+        }
+        return numero.trim();
     }
 
     private Mesa buscarOuFalhar(Long id) {
