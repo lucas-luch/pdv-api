@@ -8,6 +8,7 @@ import com.store.pdvapi.exception.MesaNaoEncontradaException;
 import com.store.pdvapi.mapper.MesaMapper;
 import com.store.pdvapi.model.Mesa;
 import com.store.pdvapi.repository.MesaRepository;
+import com.store.pdvapi.exception.MesaStatusInvalidoException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class MesaService {
         Mesa mesa = buscarOuFalhar(id);
 
         if (mesa.getStatus() != StatusMesa.LIVRE) {
-            throw new RuntimeException("Mesa precisa estar livre para ser ocupada");
+            throw new MesaStatusInvalidoException("Mesa precisa estar livre para ser ocupada");
         }
 
         mesa.setStatus(StatusMesa.OCUPADA);
@@ -72,7 +73,7 @@ public class MesaService {
         Mesa mesa = buscarOuFalhar(id);
 
         if (mesa.getStatus() != StatusMesa.OCUPADA) {
-            throw new RuntimeException("Somente mesas ocupadas podem ser fechadas");
+            throw new MesaStatusInvalidoException("Somente mesas ocupadas podem ser fechadas");
         }
 
         mesa.setStatus(StatusMesa.FECHADA);
@@ -86,7 +87,7 @@ public class MesaService {
         Mesa mesa = buscarOuFalhar(id);
 
         if (mesa.getStatus() == StatusMesa.LIVRE) {
-            throw new RuntimeException("Mesa já está livre");
+            throw new MesaStatusInvalidoException("Mesa já está livre");
         }
 
         mesa.setStatus(StatusMesa.LIVRE);
