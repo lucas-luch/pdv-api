@@ -39,17 +39,17 @@ public class MesaController {
     }
 
     @PatchMapping("/{id}/abrir")
-    public MesaResponse abrir(@PathVariable Long id, @RequestBody AtualizarStatusMesaRequest request) {
+    public MesaResponse abrir(@PathVariable Long id, @RequestBody(required = false) AtualizarStatusMesaRequest request) {
         return service.abrir(id, request);
     }
 
     @PatchMapping("/{id}/fechar")
-    public MesaResponse fechar(@PathVariable Long id, @RequestBody AtualizarStatusMesaRequest request) {
+    public MesaResponse fechar(@PathVariable Long id, @RequestBody(required = false) AtualizarStatusMesaRequest request) {
         return service.fechar(id, request);
     }
 
     @PatchMapping("/{id}/liberar")
-    public MesaResponse liberar(@PathVariable Long id, @RequestBody AtualizarStatusMesaRequest request) {
+    public MesaResponse liberar(@PathVariable Long id, @RequestBody(required = false) AtualizarStatusMesaRequest request) {
         return service.liberar(id, request);
     }
 }
