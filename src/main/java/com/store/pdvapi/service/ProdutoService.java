@@ -1,14 +1,17 @@
 package com.store.pdvapi.service;
-import com.store.pdvapi.repository.ProdutoRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.store.pdvapi.dto.produto.AtualizarProdutoRequest;
 import com.store.pdvapi.dto.produto.CriarProdutoRequest;
 import com.store.pdvapi.dto.produto.ProdutoResponse;
 import com.store.pdvapi.exception.ProdutoNaoEncontradoException;
 import com.store.pdvapi.mapper.ProdutoMapper;
 import com.store.pdvapi.model.Produto;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Service;
+import com.store.pdvapi.repository.ProdutoRepository;
 
 @Service
 public class ProdutoService {

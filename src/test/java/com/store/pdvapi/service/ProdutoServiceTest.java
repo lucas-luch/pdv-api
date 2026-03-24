@@ -5,17 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.store.pdvapi.dto.produto.CriarProdutoRequest;
 import com.store.pdvapi.exception.ProdutoNaoEncontradoException;
 import com.store.pdvapi.mapper.ProdutoMapper;
 import com.store.pdvapi.model.Produto;
 import com.store.pdvapi.repository.ProdutoRepository;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 class ProdutoServiceTest {
 

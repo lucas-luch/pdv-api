@@ -1,10 +1,11 @@
 package com.store.pdvapi.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
 import com.store.pdvapi.dto.mesa.MesaResponse;
 import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.model.Mesa;
-import org.springframework.stereotype.Component;
 
 @Component
 public class MesaMapper {

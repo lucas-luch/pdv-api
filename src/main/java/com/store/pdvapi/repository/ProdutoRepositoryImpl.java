@@ -1,14 +1,18 @@
 package com.store.pdvapi.repository;
-import org.springframework.stereotype.Repository;
-import com.store.pdvapi.model.Produto;
-import java.util.ArrayList;
-import java.util.List;
-import javax.sql.DataSource;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.springframework.stereotype.Repository;
+
+import com.store.pdvapi.model.Produto;
 
 @Repository
 public class ProdutoRepositoryImpl implements ProdutoRepository {

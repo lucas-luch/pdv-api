@@ -3,6 +3,14 @@ package com.store.pdvapi.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
 import com.store.pdvapi.enumtype.StatusMesa;
@@ -11,12 +19,6 @@ import com.store.pdvapi.exception.MesaStatusInvalidoException;
 import com.store.pdvapi.mapper.MesaMapper;
 import com.store.pdvapi.model.Mesa;
 import com.store.pdvapi.repository.MesaRepository;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 class MesaServiceTest {
 

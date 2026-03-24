@@ -1,10 +1,10 @@
 package com.store.pdvapi.mapper;
-import com.store.pdvapi.model.Produto;
 
 import org.springframework.stereotype.Component;
 
 import com.store.pdvapi.dto.produto.CriarProdutoRequest;
 import com.store.pdvapi.dto.produto.ProdutoResponse;
+import com.store.pdvapi.model.Produto;
 
 @Component
 public class ProdutoMapper {

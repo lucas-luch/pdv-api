@@ -1,7 +1,8 @@
 package com.store.pdvapi.repository;
 
-import com.store.pdvapi.model.Mesa;
 import java.util.List;
+
+import com.store.pdvapi.model.Mesa;
 
 public interface MesaRepository {
 
