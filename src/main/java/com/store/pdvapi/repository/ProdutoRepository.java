@@ -1,7 +1,8 @@
 package com.store.pdvapi.repository;
-import com.store.pdvapi.model.Produto;
+
 import java.util.List;
 
+import com.store.pdvapi.model.Produto;
 
 public interface ProdutoRepository {
 

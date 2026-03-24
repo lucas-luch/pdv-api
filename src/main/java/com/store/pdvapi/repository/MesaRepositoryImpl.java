@@ -1,7 +1,5 @@
 package com.store.pdvapi.repository;
 
-import com.store.pdvapi.enumtype.StatusMesa;
-import com.store.pdvapi.model.Mesa;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,8 +7,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.sql.DataSource;
+
 import org.springframework.stereotype.Repository;
+
+import com.store.pdvapi.enumtype.StatusMesa;
+import com.store.pdvapi.model.Mesa;
 
 @Repository
 public class MesaRepositoryImpl implements MesaRepository {

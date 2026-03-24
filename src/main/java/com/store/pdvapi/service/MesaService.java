@@ -1,17 +1,19 @@
 package com.store.pdvapi.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
 import com.store.pdvapi.dto.mesa.MesaResponse;
 import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.exception.MesaNaoEncontradaException;
+import com.store.pdvapi.exception.MesaStatusInvalidoException;
 import com.store.pdvapi.mapper.MesaMapper;
 import com.store.pdvapi.model.Mesa;
 import com.store.pdvapi.repository.MesaRepository;
-import com.store.pdvapi.exception.MesaStatusInvalidoException;
-import java.util.ArrayList;
-import java.util.List;
-import org.springframework.stereotype.Service;
 
 @Service
 public class MesaService {
