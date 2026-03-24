@@ -41,6 +41,7 @@ sudo -u postgres psql -d pdv -f src/main/resources/db/mesa.sql
 
 Permissões (caso necessário)
 
+```bash
 sudo -u postgres psql -d pdv -c "GRANT USAGE ON SCHEMA public TO pdv_user;"
 sudo -u postgres psql -d pdv -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO pdv_user;"
-sudo -u postgres psql -d pdv -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public 
+sudo -u postgres psql -d pdv -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO pdv_user;"
