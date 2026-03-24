@@ -30,7 +30,7 @@ API REST de um sistema de ponto de venda (PDV).
 
 Antes de iniciar a aplicação, é necessário criar o schema do banco.
 
-Opção 1: Script automatizado
+Opção 1: Script automatizado em pdvapi/scripts
 
 ./setup-db.sh
 
