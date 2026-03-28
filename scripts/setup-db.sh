@@ -6,6 +6,7 @@ PSQL="sudo -u postgres psql -d pdv"
 echo "Criando tabelas"
 $PSQL -f src/main/resources/db/produto.sql
 $PSQL -f src/main/resources/db/mesa.sql
+$PSQL -f src/main/resources/db/pedido.sql
 
 echo "Ajustando permissões"
 $PSQL -c "GRANT USAGE ON SCHEMA public TO pdv_user;"
