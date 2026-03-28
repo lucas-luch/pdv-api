@@ -1,5 +1,5 @@
 # pdv-api
-API REST de um sistema de ponto de venda (PDV).
+API REST para um sistema de ponto de venda (PDV).
 
 ## Tecnologias
 
@@ -30,17 +30,45 @@ API REST de um sistema de ponto de venda (PDV).
 
 Antes de iniciar a aplicação, é necessário criar o schema do banco.
 
-Opção 1: Script automatizado em pdvapi/scripts
+### Schema
 
-./setup-db.sh
+Opção 1: Script automatizado
+```bash
+./pdvapi/scripts/setup-db.sh
+```
 
 Opção 2: Execução manual
-
+```bash
 sudo -u postgres psql -d pdv -f src/main/resources/db/produto.sql
 sudo -u postgres psql -d pdv -f src/main/resources/db/mesa.sql
+```
 
-Permissões (caso necessário)
+### Permissões
 
+Caso necessário, execute:
+```bash
 sudo -u postgres psql -d pdv -c "GRANT USAGE ON SCHEMA public TO pdv_user;"
 sudo -u postgres psql -d pdv -c "GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO pdv_user;"
-sudo -u postgres psql -d pdv -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public 
+sudo -u postgres psql -d pdv -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO pdv_user;"
+```
+
+## Configuração local
+
+As configurações locais da aplicação não são versionadas.
+
+Para executar o projeto, copie o arquivo de exemplo:
+
+```bash
+cp src/main/resources/application.properties.example src/main/resources/application.properties
+```
+### Executando
+
+Com Maven instalado:
+```bash
+mvn spring-boot:run
+```
+
+Ou usando o wrapper do projeto:
+```bash
+./mvnw spring-boot:run
+```
