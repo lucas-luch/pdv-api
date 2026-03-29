@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS item_pedido (
+  id BIGSERIAL PRIMARY KEY,
+  pedido_id BIGINT NOT NULL REFERENCES pedido(id),
+  produto_id BIGINT NOT NULL REFERENCES produto(id),
+  quantidade INTEGER NOT NULL,
+  preco_unitario DOUBLE PRECISION NOT NULL,
+  subtotal DOUBLE PRECISION NOT NULL
+);

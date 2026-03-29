@@ -7,6 +7,7 @@ echo "Criando tabelas"
 $PSQL -f src/main/resources/db/produto.sql
 $PSQL -f src/main/resources/db/mesa.sql
 $PSQL -f src/main/resources/db/pedido.sql
+$PSQL -f src/main/resources/db/item_pedido.sql
 
 echo "Ajustando permissões"
 $PSQL -c "GRANT USAGE ON SCHEMA public TO pdv_user;"
