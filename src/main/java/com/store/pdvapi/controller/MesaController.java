@@ -71,7 +71,7 @@ public class MesaController {
         return service.fechar(id, request);
     }
 
-    @Operation(summary = "Liberar mesa", description = "Volta a mesa para o status livre após a limpeza.")
+    @Operation(summary = "Liberar mesa", description = "Volta a mesa para o status livre.")
     @PatchMapping("/{id}/liberar")
     public MesaResponse liberar(
             @Parameter(description = "ID da mesa a ser liberada", required = true)
