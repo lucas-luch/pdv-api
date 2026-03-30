@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
 import com.store.pdvapi.dto.mesa.MesaResponse;
+import com.store.pdvapi.dto.mesa.MesaTotalResponse;
 import com.store.pdvapi.dto.pedido.PedidoResponse;
 import com.store.pdvapi.service.MesaService;
 import com.store.pdvapi.service.PedidoService;
@@ -45,6 +46,14 @@ public class MesaController {
     @GetMapping
     public List<MesaResponse> listar() {
         return service.listar();
+    }
+
+    @Operation(summary = "Calcular total da mesa", description = "Soma os subtotais dos itens de todos os pedidos da mesa.")
+    @GetMapping("/{id}/total")
+    public MesaTotalResponse total(
+            @Parameter(description = "ID da mesa cujo total deve ser calculado", required = true)
+            @PathVariable Long id) {
+        return service.calcularTotal(id);
     }
 
     @Operation(summary = "Listar pedidos da mesa", description = "Retorna os pedidos associados à mesa solicitada.")
