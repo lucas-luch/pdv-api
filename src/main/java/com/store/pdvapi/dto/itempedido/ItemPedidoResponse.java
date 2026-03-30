@@ -1,12 +1,26 @@
 package com.store.pdvapi.dto.itempedido;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "ItemPedidoResponse", description = "Detalhes de um item lançado em um pedido.")
 public class ItemPedidoResponse {
 
+    @Schema(description = "Identificador único do item de pedido", example = "15")
     private Long id;
+
+    @Schema(description = "Pedido ao qual o item pertence", example = "1")
     private Long pedidoId;
+
+    @Schema(description = "Produto incluído no pedido", example = "5")
     private Long produtoId;
+
+    @Schema(description = "Quantidade lançada do produto", example = "2")
     private int quantidade;
+
+    @Schema(description = "Preço unitário aplicado no momento do lançamento", example = "10.5")
     private double precoUnitario;
+
+    @Schema(description = "Subtotal deste item (quantidade x preço)", example = "21.0")
     private double subtotal;
 
     public Long getId() {
