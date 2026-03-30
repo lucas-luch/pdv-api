@@ -8,22 +8,33 @@ import org.springframework.stereotype.Service;
 import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
 import com.store.pdvapi.dto.mesa.MesaResponse;
+import com.store.pdvapi.dto.mesa.MesaTotalResponse;
 import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.exception.MesaNaoEncontradaException;
 import com.store.pdvapi.exception.MesaStatusInvalidoException;
 import com.store.pdvapi.mapper.MesaMapper;
+import com.store.pdvapi.model.ItemPedido;
 import com.store.pdvapi.model.Mesa;
+import com.store.pdvapi.model.Pedido;
+import com.store.pdvapi.repository.ItemPedidoRepository;
 import com.store.pdvapi.repository.MesaRepository;
+import com.store.pdvapi.repository.PedidoRepository;
 
 @Service
 public class MesaService {
 
     private final MesaRepository repository;
     private final MesaMapper mapper;
+    private final PedidoRepository pedidoRepository;
+    private final ItemPedidoRepository itemPedidoRepository;
 
-    public MesaService(MesaRepository repository, MesaMapper mapper) {
+    public MesaService(MesaRepository repository, MesaMapper mapper,
+                       PedidoRepository pedidoRepository,
+                       ItemPedidoRepository itemPedidoRepository) {
         this.repository = repository;
         this.mapper = mapper;
+        this.pedidoRepository = pedidoRepository;
+        this.itemPedidoRepository = itemPedidoRepository;
     }
 
     public MesaResponse criar(CriarMesaRequest request) {
@@ -97,6 +108,24 @@ public class MesaService {
         repository.atualizar(mesa);
 
         return mapper.toResponse(mesa);
+    }
+
+    public MesaTotalResponse calcularTotal(Long id) {
+        buscarOuFalhar(id);
+        List<Pedido> pedidos = pedidoRepository.listarPorMesa(id);
+        double total = 0d;
+
+        for (Pedido pedido : pedidos) {
+            List<ItemPedido> itens = itemPedidoRepository.listarPorPedido(pedido.getId());
+            for (ItemPedido item : itens) {
+                total += item.getSubtotal();
+            }
+        }
+
+        MesaTotalResponse response = new MesaTotalResponse();
+        response.setMesaId(id);
+        response.setTotal(total);
+        return response;
     }
 
     private void atualizarObservacao(Mesa mesa, AtualizarStatusMesaRequest request) {

@@ -17,18 +17,26 @@ import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.exception.MesaNaoEncontradaException;
 import com.store.pdvapi.exception.MesaStatusInvalidoException;
 import com.store.pdvapi.mapper.MesaMapper;
+import com.store.pdvapi.model.ItemPedido;
 import com.store.pdvapi.model.Mesa;
+import com.store.pdvapi.model.Pedido;
+import com.store.pdvapi.repository.ItemPedidoRepository;
 import com.store.pdvapi.repository.MesaRepository;
+import com.store.pdvapi.repository.PedidoRepository;
 
 class MesaServiceTest {
 
     private MesaService service;
     private RecordingMesaRepository repository;
+    private RecordingPedidoRepository pedidoRepository;
+    private RecordingItemPedidoRepository itemPedidoRepository;
 
     @BeforeEach
     void setUp() {
         repository = new RecordingMesaRepository();
-        service = new MesaService(repository, new MesaMapper());
+        pedidoRepository = new RecordingPedidoRepository();
+        itemPedidoRepository = new RecordingItemPedidoRepository();
+        service = new MesaService(repository, new MesaMapper(), pedidoRepository, itemPedidoRepository);
     }
 
     @Test
@@ -171,6 +179,52 @@ class MesaServiceTest {
         @Override
         public List<Mesa> listarTodos() {
             return new ArrayList<>(store.values());
+        }
+    }
+
+    private static class RecordingPedidoRepository implements PedidoRepository {
+
+        @Override
+        public void salvar(Pedido pedido) {
+            // unused
+        }
+
+        @Override
+        public void atualizar(Pedido pedido) {
+            // unused
+        }
+
+        @Override
+        public Pedido buscarPorId(Long id) {
+            return null;
+        }
+
+        @Override
+        public List<Pedido> listarPorMesa(Long mesaId) {
+            return new ArrayList<>();
+        }
+    }
+
+    private static class RecordingItemPedidoRepository implements ItemPedidoRepository {
+
+        @Override
+        public void salvar(ItemPedido item) {
+            // unused
+        }
+
+        @Override
+        public void atualizar(ItemPedido item) {
+            // unused
+        }
+
+        @Override
+        public ItemPedido buscarPorId(Long id) {
+            return null;
+        }
+
+        @Override
+        public List<ItemPedido> listarPorPedido(Long pedidoId) {
+            return new ArrayList<>();
         }
     }
 }
