@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
 import com.store.pdvapi.dto.mesa.MesaResponse;
+import com.store.pdvapi.dto.pedido.PedidoResponse;
 import com.store.pdvapi.service.MesaService;
+import com.store.pdvapi.service.PedidoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,9 +27,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class MesaController {
 
     private final MesaService service;
+    private final PedidoService pedidoService;
 
-    public MesaController(MesaService service) {
+    public MesaController(MesaService service, PedidoService pedidoService) {
         this.service = service;
+        this.pedidoService = pedidoService;
     }
 
     @Operation(summary = "Criar mesa", description = "Registra uma nova mesa no sistema.")
@@ -41,6 +45,15 @@ public class MesaController {
     @GetMapping
     public List<MesaResponse> listar() {
         return service.listar();
+    }
+
+    @Operation(summary = "Listar pedidos da mesa", description = "Retorna os pedidos associados à mesa solicitada.")
+    @GetMapping("/{id}/pedidos")
+    public List<PedidoResponse> listarPedidos(
+            @Parameter(description = "ID da mesa cujos pedidos devem ser listados", required = true)
+            @PathVariable Long id) {
+        service.buscarPorId(id);
+        return pedidoService.listarPorMesa(id);
     }
 
     @Operation(summary = "Buscar mesa", description = "Retorna uma mesa específica pelo identificador.")
