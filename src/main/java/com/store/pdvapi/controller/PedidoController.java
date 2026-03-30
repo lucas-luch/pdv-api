@@ -1,7 +1,9 @@
 package com.store.pdvapi.controller;
 
+import com.store.pdvapi.dto.itempedido.ItemPedidoResponse;
 import com.store.pdvapi.dto.pedido.CriarPedidoRequest;
 import com.store.pdvapi.dto.pedido.PedidoResponse;
+import com.store.pdvapi.service.ItemPedidoService;
 import com.store.pdvapi.service.PedidoService;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +24,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class PedidoController {
 
     private final PedidoService service;
+    private final ItemPedidoService itemPedidoService;
 
-    public PedidoController(PedidoService service) {
+    public PedidoController(PedidoService service, ItemPedidoService itemPedidoService) {
         this.service = service;
+        this.itemPedidoService = itemPedidoService;
     }
 
     @Operation(summary = "Criar pedido", description = "Abre um pedido para a mesa informada, assumindo que esteja ocupada.")
@@ -56,5 +60,14 @@ public class PedidoController {
             @Parameter(description = "ID do pedido a ser fechado", required = true)
             @PathVariable Long id) {
         return service.fechar(id);
+    }
+
+    @Operation(summary = "Listar itens do pedido", description = "Retorna os itens lançados no pedido informado.")
+    @GetMapping("/{id}/itens")
+    public List<ItemPedidoResponse> listarItens(
+            @Parameter(description = "ID do pedido cujos itens devem ser listados", required = true)
+            @PathVariable Long id) {
+        service.buscarPorId(id);
+        return itemPedidoService.listarPorPedido(id);
     }
 }
