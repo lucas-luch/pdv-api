@@ -3,6 +3,8 @@ package com.store.pdvapi.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,13 +15,16 @@ import org.junit.jupiter.api.Test;
 
 import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
+import com.store.pdvapi.dto.mesa.MesaTotalResponse;
 import com.store.pdvapi.enumtype.StatusMesa;
+import com.store.pdvapi.enumtype.StatusPedido;
 import com.store.pdvapi.exception.MesaNaoEncontradaException;
 import com.store.pdvapi.exception.MesaStatusInvalidoException;
 import com.store.pdvapi.mapper.MesaMapper;
 import com.store.pdvapi.model.ItemPedido;
 import com.store.pdvapi.model.Mesa;
 import com.store.pdvapi.model.Pedido;
+import com.store.pdvapi.model.Produto;
 import com.store.pdvapi.repository.ItemPedidoRepository;
 import com.store.pdvapi.repository.MesaRepository;
 import com.store.pdvapi.repository.PedidoRepository;
@@ -130,6 +135,29 @@ class MesaServiceTest {
         assertThrows(MesaNaoEncontradaException.class, () -> service.buscarPorId(999L));
     }
 
+    @Test
+    void calcularTotal_deveSomarItensDoPedido() {
+        Mesa mesa = new Mesa(20L, "20", StatusMesa.FECHADA, null);
+        repository.seed(mesa);
+
+        LocalDate data = LocalDate.now();
+        LocalTime hora = LocalTime.now();
+        Pedido pedido = new Pedido(1L, mesa, StatusPedido.ABERTO, data, hora);
+        pedidoRepository.seed(pedido);
+
+        Produto produtoA = new Produto(1L, "Cafe", 10.0, true);
+        Produto produtoB = new Produto(2L, "Bolo", 15.0, true);
+        ItemPedido itemA = new ItemPedido(1L, pedido, produtoA, 1, 10.0, 10.0);
+        ItemPedido itemB = new ItemPedido(2L, pedido, produtoB, 1, 15.0, 15.0);
+        itemPedidoRepository.seed(itemA);
+        itemPedidoRepository.seed(itemB);
+
+        MesaTotalResponse total = service.calcularTotal(mesa.getId());
+
+        assertEquals(mesa.getId(), total.getMesaId());
+        assertEquals(25.0, total.getTotal());
+    }
+
     private static class RecordingMesaRepository implements MesaRepository {
 
         private final Map<Long, Mesa> store = new LinkedHashMap<>();
@@ -184,47 +212,71 @@ class MesaServiceTest {
 
     private static class RecordingPedidoRepository implements PedidoRepository {
 
+        private final Map<Long, Pedido> store = new LinkedHashMap<>();
+
+        void seed(Pedido pedido) {
+            store.put(pedido.getId(), pedido);
+        }
+
         @Override
         public void salvar(Pedido pedido) {
-            // unused
+            store.put(pedido.getId(), pedido);
         }
 
         @Override
         public void atualizar(Pedido pedido) {
-            // unused
+            store.put(pedido.getId(), pedido);
         }
 
         @Override
         public Pedido buscarPorId(Long id) {
-            return null;
+            return store.get(id);
         }
 
         @Override
         public List<Pedido> listarPorMesa(Long mesaId) {
-            return new ArrayList<>();
+            List<Pedido> pedidos = new ArrayList<>();
+            for (Pedido pedido : store.values()) {
+                if (pedido.getMesa() != null && mesaId.equals(pedido.getMesa().getId())) {
+                    pedidos.add(pedido);
+                }
+            }
+            return pedidos;
         }
     }
 
     private static class RecordingItemPedidoRepository implements ItemPedidoRepository {
 
+        private final Map<Long, ItemPedido> store = new LinkedHashMap<>();
+
+        void seed(ItemPedido item) {
+            store.put(item.getId(), item);
+        }
+
         @Override
         public void salvar(ItemPedido item) {
-            // unused
+            store.put(item.getId(), item);
         }
 
         @Override
         public void atualizar(ItemPedido item) {
-            // unused
+            store.put(item.getId(), item);
         }
 
         @Override
         public ItemPedido buscarPorId(Long id) {
-            return null;
+            return store.get(id);
         }
 
         @Override
         public List<ItemPedido> listarPorPedido(Long pedidoId) {
-            return new ArrayList<>();
+            List<ItemPedido> itens = new ArrayList<>();
+            for (ItemPedido item : store.values()) {
+                if (item.getPedido() != null && pedidoId.equals(item.getPedido().getId())) {
+                    itens.add(item);
+                }
+            }
+            return itens;
         }
     }
 }
