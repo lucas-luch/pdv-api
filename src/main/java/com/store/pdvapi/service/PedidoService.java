@@ -4,6 +4,10 @@ import com.store.pdvapi.dto.pedido.CriarPedidoRequest;
 import com.store.pdvapi.dto.pedido.PedidoResponse;
 import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.enumtype.StatusPedido;
+import com.store.pdvapi.exception.MesaNaoEncontradaException;
+import com.store.pdvapi.exception.MesaStatusInvalidoException;
+import com.store.pdvapi.exception.PedidoNaoEncontradoException;
+import com.store.pdvapi.exception.PedidoStatusInvalidoException;
 import com.store.pdvapi.mapper.PedidoMapper;
 import com.store.pdvapi.model.Mesa;
 import com.store.pdvapi.model.Pedido;
@@ -32,7 +36,7 @@ public class PedidoService {
         Mesa mesa = buscarMesa(request.getMesaId());
 
         if (mesa.getStatus() != StatusMesa.OCUPADA) {
-            throw new RuntimeException("Só é possível abrir pedido em mesa ocupada");
+            throw new MesaStatusInvalidoException("Só é possível abrir pedido em mesa ocupada");
         }
 
         Pedido pedido = mapper.toEntity(request);
@@ -48,7 +52,7 @@ public class PedidoService {
     public PedidoResponse buscarPorId(Long id) {
         Pedido pedido = pedidoRepository.buscarPorId(id);
         if (pedido == null) {
-            throw new RuntimeException("Pedido não encontrado com id: " + id);
+            throw new PedidoNaoEncontradoException("Pedido não encontrado com id: " + id);
         }
         return mapper.toResponse(pedido);
     }
@@ -65,11 +69,11 @@ public class PedidoService {
     public PedidoResponse fechar(Long id) {
         Pedido pedido = pedidoRepository.buscarPorId(id);
         if (pedido == null) {
-            throw new RuntimeException("Pedido não encontrado com id: " + id);
+            throw new PedidoNaoEncontradoException("Pedido não encontrado com id: " + id);
         }
 
         if (pedido.getStatus() != StatusPedido.ABERTO) {
-            throw new RuntimeException("Somente pedidos abertos podem ser fechados");
+            throw new PedidoStatusInvalidoException("Somente pedidos abertos podem ser fechados");
         }
 
         pedido.setStatus(StatusPedido.FECHADO);
@@ -80,7 +84,7 @@ public class PedidoService {
     private Mesa buscarMesa(Long mesaId) {
         Mesa mesa = mesaRepository.buscarPorId(mesaId);
         if (mesa == null) {
-            throw new RuntimeException("Mesa não encontrada com id: " + mesaId);
+            throw new MesaNaoEncontradaException("Mesa não encontrada com id: " + mesaId);
         }
         return mesa;
     }

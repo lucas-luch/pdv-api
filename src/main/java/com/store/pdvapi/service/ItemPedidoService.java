@@ -3,6 +3,10 @@ package com.store.pdvapi.service;
 import com.store.pdvapi.dto.itempedido.CriarItemPedidoRequest;
 import com.store.pdvapi.dto.itempedido.ItemPedidoResponse;
 import com.store.pdvapi.enumtype.StatusPedido;
+import com.store.pdvapi.exception.PedidoNaoEncontradoException;
+import com.store.pdvapi.exception.PedidoStatusInvalidoException;
+import com.store.pdvapi.exception.ProdutoInativoException;
+import com.store.pdvapi.exception.ProdutoNaoEncontradoException;
 import com.store.pdvapi.mapper.ItemPedidoMapper;
 import com.store.pdvapi.model.ItemPedido;
 import com.store.pdvapi.model.Pedido;
@@ -35,15 +39,15 @@ public class ItemPedidoService {
     public ItemPedidoResponse adicionar(CriarItemPedidoRequest request) {
         Pedido pedido = buscarPedido(request.getPedidoId());
         if (pedido.getStatus() != StatusPedido.ABERTO) {
-            throw new RuntimeException("Só é possível adicionar itens a pedidos abertos");
+            throw new PedidoStatusInvalidoException("Só é possível adicionar itens a pedidos abertos");
         }
 
         Produto produto = produtoRepository.buscarPorId(request.getProdutoId());
         if (produto == null) {
-            throw new RuntimeException("Produto não encontrado com id: " + request.getProdutoId());
+            throw new ProdutoNaoEncontradoException("Produto não encontrado com id: " + request.getProdutoId());
         }
         if (!produto.isAtivo()) {
-            throw new RuntimeException("Produto inativo não pode ser adicionado ao pedido");
+            throw new ProdutoInativoException("Produto inativo não pode ser adicionado ao pedido");
         }
 
         ItemPedido item = mapper.toEntity(request);
@@ -68,7 +72,7 @@ public class ItemPedidoService {
     private Pedido buscarPedido(Long pedidoId) {
         Pedido pedido = pedidoRepository.buscarPorId(pedidoId);
         if (pedido == null) {
-            throw new RuntimeException("Pedido não encontrado com id: " + pedidoId);
+            throw new PedidoNaoEncontradoException("Pedido não encontrado com id: " + pedidoId);
         }
         return pedido;
     }
