@@ -1,5 +1,6 @@
 package com.store.pdvapi.repository;
 
+import com.store.pdvapi.exception.BancoDeDadosException;
 import com.store.pdvapi.model.ItemPedido;
 import com.store.pdvapi.model.Pedido;
 import com.store.pdvapi.model.Produto;
@@ -43,7 +44,7 @@ public class ItemPedidoRepositoryImpl implements ItemPedidoRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar item do pedido", e);
+            throw new BancoDeDadosException("Erro ao salvar item do pedido", e);
         }
     }
 
@@ -61,7 +62,7 @@ public class ItemPedidoRepositoryImpl implements ItemPedidoRepository {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar item do pedido", e);
+            throw new BancoDeDadosException("Erro ao atualizar item do pedido", e);
         }
     }
 
@@ -82,7 +83,7 @@ public class ItemPedidoRepositoryImpl implements ItemPedidoRepository {
 
             return null;
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar item do pedido", e);
+            throw new BancoDeDadosException("Erro ao buscar item do pedido", e);
         }
     }
 
@@ -102,7 +103,7 @@ public class ItemPedidoRepositoryImpl implements ItemPedidoRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar itens do pedido", e);
+            throw new BancoDeDadosException("Erro ao listar itens do pedido", e);
         }
 
         return itens;

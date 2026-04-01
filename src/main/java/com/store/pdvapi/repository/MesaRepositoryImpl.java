@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import org.springframework.stereotype.Repository;
 
 import com.store.pdvapi.enumtype.StatusMesa;
+import com.store.pdvapi.exception.BancoDeDadosException;
 import com.store.pdvapi.model.Mesa;
 
 @Repository
@@ -43,7 +44,7 @@ public class MesaRepositoryImpl implements MesaRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar mesa", e);
+            throw new BancoDeDadosException("Erro ao salvar mesa", e);
         }
     }
 
@@ -61,7 +62,7 @@ public class MesaRepositoryImpl implements MesaRepository {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar mesa", e);
+            throw new BancoDeDadosException("Erro ao atualizar mesa", e);
         }
     }
 
@@ -82,7 +83,7 @@ public class MesaRepositoryImpl implements MesaRepository {
 
             return null;
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar mesa", e);
+            throw new BancoDeDadosException("Erro ao buscar mesa", e);
         }
     }
 
@@ -103,7 +104,7 @@ public class MesaRepositoryImpl implements MesaRepository {
 
             return null;
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar mesa por numero", e);
+            throw new BancoDeDadosException("Erro ao buscar mesa por numero", e);
         }
     }
 
@@ -120,7 +121,7 @@ public class MesaRepositoryImpl implements MesaRepository {
                 mesas.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar mesas", e);
+            throw new BancoDeDadosException("Erro ao listar mesas", e);
         }
 
         return mesas;

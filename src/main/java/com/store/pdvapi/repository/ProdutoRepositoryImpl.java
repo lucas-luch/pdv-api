@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 
 import org.springframework.stereotype.Repository;
 
+import com.store.pdvapi.exception.BancoDeDadosException;
 import com.store.pdvapi.model.Produto;
 
 @Repository
@@ -43,7 +44,7 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar produto", e);
+            throw new BancoDeDadosException("Erro ao salvar produto", e);
         }
     }
 
@@ -62,7 +63,7 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar produto", e);
+            throw new BancoDeDadosException("Erro ao atualizar produto", e);
         }
     }
 
@@ -83,7 +84,7 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
 
             return null;
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar produto", e);
+            throw new BancoDeDadosException("Erro ao buscar produto", e);
         }
     }
 
@@ -100,7 +101,7 @@ public class ProdutoRepositoryImpl implements ProdutoRepository {
                 produtos.add(mapRow(rs));
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar produtos", e);
+            throw new BancoDeDadosException("Erro ao listar produtos", e);
         }
 
         return produtos;
