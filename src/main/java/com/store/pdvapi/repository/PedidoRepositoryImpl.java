@@ -1,6 +1,7 @@
 package com.store.pdvapi.repository;
 
 import com.store.pdvapi.enumtype.StatusPedido;
+import com.store.pdvapi.exception.BancoDeDadosException;
 import com.store.pdvapi.model.Mesa;
 import com.store.pdvapi.model.Pedido;
 import java.sql.Connection;
@@ -46,7 +47,7 @@ public class PedidoRepositoryImpl implements PedidoRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao salvar pedido", e);
+            throw new BancoDeDadosException("Erro ao salvar pedido", e);
         }
     }
 
@@ -65,7 +66,7 @@ public class PedidoRepositoryImpl implements PedidoRepository {
 
             stmt.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao atualizar pedido", e);
+            throw new BancoDeDadosException("Erro ao atualizar pedido", e);
         }
     }
 
@@ -86,7 +87,7 @@ public class PedidoRepositoryImpl implements PedidoRepository {
 
             return null;
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao buscar pedido", e);
+            throw new BancoDeDadosException("Erro ao buscar pedido", e);
         }
     }
 
@@ -106,7 +107,7 @@ public class PedidoRepositoryImpl implements PedidoRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar pedidos", e);
+            throw new BancoDeDadosException("Erro ao listar pedidos", e);
         }
 
         return pedidos;
