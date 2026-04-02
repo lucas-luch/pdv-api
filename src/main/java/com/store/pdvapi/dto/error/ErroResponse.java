@@ -2,6 +2,7 @@ package com.store.pdvapi.dto.error;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(name = "ErroResponse", description = "Payload retornado quando uma exceção é lançada.")
 public class ErroResponse {
@@ -20,6 +21,9 @@ public class ErroResponse {
 
     @Schema(description = "Caminho da requisição que disparou o erro", example = "/mesas/1")
     private String path;
+
+    @Schema(description = "Lista opcional com detalhes dos campos inválidos")
+    private List<String> details;
 
     public LocalDateTime getTimestamp() {
         return timestamp;
@@ -59,5 +63,13 @@ public class ErroResponse {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public List<String> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<String> details) {
+        this.details = details;
     }
 }
