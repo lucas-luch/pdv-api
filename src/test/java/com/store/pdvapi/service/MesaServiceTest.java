@@ -19,6 +19,7 @@ import com.store.pdvapi.dto.mesa.MesaTotalResponse;
 import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.enumtype.StatusPedido;
 import com.store.pdvapi.exception.MesaNaoEncontradaException;
+import com.store.pdvapi.exception.MesaNumeroDuplicadoException;
 import com.store.pdvapi.exception.MesaStatusInvalidoException;
 import com.store.pdvapi.mapper.MesaMapper;
 import com.store.pdvapi.model.ItemPedido;
@@ -59,14 +60,14 @@ class MesaServiceTest {
     }
 
     @Test
-    void criar_quandoNumeroDuplicado_lancaRuntime() {
+    void criar_quandoNumeroDuplicado_lancaMesaNumeroDuplicado() {
         Mesa existente = new Mesa(1L, "10", StatusMesa.FECHADA, "Ocupada");
         repository.seed(existente);
 
         CriarMesaRequest request = new CriarMesaRequest();
         request.setNumero("10");
 
-        assertThrows(RuntimeException.class, () -> service.criar(request));
+        assertThrows(MesaNumeroDuplicadoException.class, () -> service.criar(request));
     }
 
     @Test

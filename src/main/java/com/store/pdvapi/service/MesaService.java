@@ -72,10 +72,7 @@ public class MesaService {
 
     public MesaResponse abrir(Long id, AtualizarStatusMesaRequest request) {
         Mesa mesa = buscarOuFalhar(id);
-
-        if (mesa.getStatus() != StatusMesa.LIVRE) {
-            throw new MesaStatusInvalidoException("Mesa precisa estar livre para ser ocupada");
-        }
+        validarMesaLivreParaAbrir(mesa);
 
         mesa.setStatus(StatusMesa.OCUPADA);
         atualizarObservacao(mesa, request);
@@ -86,10 +83,7 @@ public class MesaService {
 
     public MesaResponse fechar(Long id, AtualizarStatusMesaRequest request) {
         Mesa mesa = buscarOuFalhar(id);
-
-        if (mesa.getStatus() != StatusMesa.OCUPADA) {
-            throw new MesaStatusInvalidoException("Somente mesas ocupadas podem ser fechadas");
-        }
+        validarMesaOcupadaParaFechar(mesa);
 
         mesa.setStatus(StatusMesa.FECHADA);
         atualizarObservacao(mesa, request);
@@ -100,10 +94,7 @@ public class MesaService {
 
     public MesaResponse liberar(Long id, AtualizarStatusMesaRequest request) {
         Mesa mesa = buscarOuFalhar(id);
-
-        if (mesa.getStatus() == StatusMesa.LIVRE) {
-            throw new MesaStatusInvalidoException("Mesa já está livre");
-        }
+        validarMesaParaLiberar(mesa);
 
         mesa.setStatus(StatusMesa.LIVRE);
         atualizarObservacao(mesa, request);
@@ -133,6 +124,24 @@ public class MesaService {
     private void atualizarObservacao(Mesa mesa, AtualizarStatusMesaRequest request) {
         if (request != null && request.getObservacao() != null) {
             mesa.setObservacao(request.getObservacao());
+        }
+    }
+
+    private void validarMesaLivreParaAbrir(Mesa mesa) {
+        if (mesa.getStatus() != StatusMesa.LIVRE) {
+            throw new MesaStatusInvalidoException("Mesa precisa estar livre para ser ocupada");
+        }
+    }
+
+    private void validarMesaOcupadaParaFechar(Mesa mesa) {
+        if (mesa.getStatus() != StatusMesa.OCUPADA) {
+            throw new MesaStatusInvalidoException("Somente mesas ocupadas podem ser fechadas");
+        }
+    }
+
+    private void validarMesaParaLiberar(Mesa mesa) {
+        if (mesa.getStatus() == StatusMesa.LIVRE) {
+            throw new MesaStatusInvalidoException("Mesa já está livre");
         }
     }
 
