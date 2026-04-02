@@ -38,7 +38,8 @@ public class ApiExceptionHandler {
         return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({ProdutoNaoEncontradoException.class, ProdutoInativoException.class})
+    @ExceptionHandler({ProdutoNaoEncontradoException.class, ProdutoInativoException.class,
+            ProdutoStatusInvalidoException.class})
     public ResponseEntity<ErroResponse> handleProdutoInvalidos(RuntimeException ex, HttpServletRequest request) {
         return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
