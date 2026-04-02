@@ -6,6 +6,7 @@ import com.store.pdvapi.dto.pedido.PedidoResponse;
 import com.store.pdvapi.service.ItemPedidoService;
 import com.store.pdvapi.service.PedidoService;
 import java.util.List;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,7 @@ public class PedidoController {
     @Operation(summary = "Criar pedido", description = "Abre um pedido para a mesa informada, assumindo que esteja ocupada.")
     @PostMapping
     public PedidoResponse criar(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "ID da mesa que receberá o pedido.", required = true)
-            @RequestBody CriarPedidoRequest request) {
+            @Valid @RequestBody CriarPedidoRequest request) {
         return service.criar(request);
     }
 

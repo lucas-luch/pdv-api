@@ -2,6 +2,7 @@ package com.store.pdvapi.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,7 +39,7 @@ public class MesaController {
     @Operation(summary = "Criar mesa", description = "Registra uma nova mesa no sistema.")
     @PostMapping
     public MesaResponse criar(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Número e observações da mesa.", required = true)
-            @RequestBody CriarMesaRequest request) {
+            @Valid @RequestBody CriarMesaRequest request) {
         return service.criar(request);
     }
 
