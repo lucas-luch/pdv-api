@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import com.store.pdvapi.dto.produto.CriarProdutoRequest;
 import com.store.pdvapi.exception.ProdutoNaoEncontradoException;
+import com.store.pdvapi.exception.ProdutoStatusInvalidoException;
 import com.store.pdvapi.mapper.ProdutoMapper;
 import com.store.pdvapi.model.Produto;
 import com.store.pdvapi.repository.ProdutoRepository;
@@ -65,6 +66,22 @@ class ProdutoServiceTest {
         assertEquals("Água", resposta.getNome());
         assertEquals(3.0, resposta.getPreco(), 0.0001);
         assertFalse(resposta.isAtivo());
+    }
+
+    @Test
+    void ativar_quandoProdutoJaEstiverAtivo_lancaProdutoStatusInvalido() {
+        Produto produto = new Produto(2L, "Suco", 7.5, true);
+        repository.seed(produto);
+
+        assertThrows(ProdutoStatusInvalidoException.class, () -> service.ativar(2L));
+    }
+
+    @Test
+    void inativar_quandoProdutoJaEstiverInativo_lancaProdutoStatusInvalido() {
+        Produto produto = new Produto(3L, "Água", 3.0, false);
+        repository.seed(produto);
+
+        assertThrows(ProdutoStatusInvalidoException.class, () -> service.inativar(3L));
     }
 
     private static class RecordingProdutoRepository implements ProdutoRepository {

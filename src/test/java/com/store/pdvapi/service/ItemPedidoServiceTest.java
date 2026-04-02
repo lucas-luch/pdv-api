@@ -7,6 +7,9 @@ import com.store.pdvapi.dto.itempedido.CriarItemPedidoRequest;
 import com.store.pdvapi.dto.itempedido.ItemPedidoResponse;
 import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.enumtype.StatusPedido;
+import com.store.pdvapi.exception.PedidoNaoEncontradoException;
+import com.store.pdvapi.exception.PedidoStatusInvalidoException;
+import com.store.pdvapi.exception.ProdutoInativoException;
 import com.store.pdvapi.model.Mesa;
 import com.store.pdvapi.model.Pedido;
 import com.store.pdvapi.model.Produto;
@@ -58,17 +61,17 @@ class ItemPedidoServiceTest {
     }
 
     @Test
-    void adicionar_quandoPedidoNaoEncontrado_lancaRuntime() {
+    void adicionar_quandoPedidoNaoEncontrado_lancaPedidoNaoEncontradoException() {
         CriarItemPedidoRequest request = new CriarItemPedidoRequest();
         request.setPedidoId(99L);
         request.setProdutoId(1L);
         request.setQuantidade(1);
 
-        assertThrows(RuntimeException.class, () -> service.adicionar(request));
+        assertThrows(PedidoNaoEncontradoException.class, () -> service.adicionar(request));
     }
 
     @Test
-    void adicionar_quandoPedidoFechado_lancaRuntime() {
+    void adicionar_quandoPedidoFechado_lancaPedidoStatusInvalidoException() {
         Pedido pedido = new Pedido(2L, new Mesa(1L, "01", StatusMesa.OCUPADA, null), StatusPedido.FECHADO, null, null);
         pedidoRepository.seed(pedido);
         CriarItemPedidoRequest request = new CriarItemPedidoRequest();
@@ -76,11 +79,11 @@ class ItemPedidoServiceTest {
         request.setProdutoId(1L);
         request.setQuantidade(1);
 
-        assertThrows(RuntimeException.class, () -> service.adicionar(request));
+        assertThrows(PedidoStatusInvalidoException.class, () -> service.adicionar(request));
     }
 
     @Test
-    void adicionar_quandoProdutoInativo_lancaRuntime() {
+    void adicionar_quandoProdutoInativo_lancaProdutoInativoException() {
         Pedido pedido = new Pedido(3L, new Mesa(1L, "01", StatusMesa.OCUPADA, null), StatusPedido.ABERTO, null, null);
         pedidoRepository.seed(pedido);
         Produto produto = new Produto(2L, "Fanta", 8.0, false);
@@ -90,7 +93,7 @@ class ItemPedidoServiceTest {
         request.setProdutoId(2L);
         request.setQuantidade(1);
 
-        assertThrows(RuntimeException.class, () -> service.adicionar(request));
+        assertThrows(ProdutoInativoException.class, () -> service.adicionar(request));
     }
 
     @Test

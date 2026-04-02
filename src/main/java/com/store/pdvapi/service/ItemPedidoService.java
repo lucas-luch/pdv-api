@@ -38,17 +38,10 @@ public class ItemPedidoService {
 
     public ItemPedidoResponse adicionar(CriarItemPedidoRequest request) {
         Pedido pedido = buscarPedido(request.getPedidoId());
-        if (pedido.getStatus() != StatusPedido.ABERTO) {
-            throw new PedidoStatusInvalidoException("Só é possível adicionar itens a pedidos abertos");
-        }
+        validarPedidoAbertoParaAdicionarItem(pedido);
 
         Produto produto = produtoRepository.buscarPorId(request.getProdutoId());
-        if (produto == null) {
-            throw new ProdutoNaoEncontradoException("Produto não encontrado com id: " + request.getProdutoId());
-        }
-        if (!produto.isAtivo()) {
-            throw new ProdutoInativoException("Produto inativo não pode ser adicionado ao pedido");
-        }
+        validarProdutoParaAdicionarItem(produto, request.getProdutoId());
 
         ItemPedido item = mapper.toEntity(request);
         item.setPedido(pedido);
@@ -75,5 +68,21 @@ public class ItemPedidoService {
             throw new PedidoNaoEncontradoException("Pedido não encontrado com id: " + pedidoId);
         }
         return pedido;
+    }
+
+    private void validarPedidoAbertoParaAdicionarItem(Pedido pedido) {
+        if (pedido.getStatus() != StatusPedido.ABERTO) {
+            throw new PedidoStatusInvalidoException("Só é possível adicionar itens a pedidos abertos");
+        }
+    }
+
+    private void validarProdutoParaAdicionarItem(Produto produto, Long produtoId) {
+        if (produto == null) {
+            throw new ProdutoNaoEncontradoException("Produto não encontrado com id: " + produtoId);
+        }
+
+        if (!produto.isAtivo()) {
+            throw new ProdutoInativoException("Produto inativo não pode ser adicionado ao pedido");
+        }
     }
 }
