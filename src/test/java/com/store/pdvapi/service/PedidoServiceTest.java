@@ -8,6 +8,10 @@ import com.store.pdvapi.dto.pedido.CriarPedidoRequest;
 import com.store.pdvapi.dto.pedido.PedidoResponse;
 import com.store.pdvapi.enumtype.StatusMesa;
 import com.store.pdvapi.enumtype.StatusPedido;
+import com.store.pdvapi.exception.MesaNaoEncontradaException;
+import com.store.pdvapi.exception.MesaStatusInvalidoException;
+import com.store.pdvapi.exception.PedidoNaoEncontradoException;
+import com.store.pdvapi.exception.PedidoStatusInvalidoException;
 import com.store.pdvapi.model.Mesa;
 import com.store.pdvapi.model.Pedido;
 import com.store.pdvapi.repository.MesaRepository;
@@ -53,22 +57,22 @@ class PedidoServiceTest {
     }
 
     @Test
-    void criar_quandoMesaNaoExiste_lancaRuntimeException() {
+    void criar_quandoMesaNaoExiste_lancaMesaNaoEncontradaException() {
         CriarPedidoRequest request = new CriarPedidoRequest();
         request.setMesaId(99L);
 
-        assertThrows(RuntimeException.class, () -> service.criar(request));
+        assertThrows(MesaNaoEncontradaException.class, () -> service.criar(request));
     }
 
     @Test
-    void criar_quandoMesaNaoOcupada_lancaRuntimeException() {
+    void criar_quandoMesaNaoOcupada_lancaMesaStatusInvalidoException() {
         Mesa mesaLivre = new Mesa(2L, "02", StatusMesa.LIVRE, null);
         mesaRepository.seed(mesaLivre);
 
         CriarPedidoRequest request = new CriarPedidoRequest();
         request.setMesaId(2L);
 
-        assertThrows(RuntimeException.class, () -> service.criar(request));
+        assertThrows(MesaStatusInvalidoException.class, () -> service.criar(request));
     }
 
     @Test
@@ -83,16 +87,16 @@ class PedidoServiceTest {
     }
 
     @Test
-    void fechar_quandoPedidoNaoEncontrado_lancaRuntimeException() {
-        assertThrows(RuntimeException.class, () -> service.fechar(7L));
+    void fechar_quandoPedidoNaoEncontrado_lancaPedidoNaoEncontradoException() {
+        assertThrows(PedidoNaoEncontradoException.class, () -> service.fechar(7L));
     }
 
     @Test
-    void fechar_quandoJaFechado_lancaRuntimeException() {
+    void fechar_quandoJaFechado_lancaPedidoStatusInvalidoException() {
         Pedido pedido = new Pedido(2L, new Mesa(1L, "01", StatusMesa.OCUPADA, null), StatusPedido.FECHADO, LocalDate.now(), LocalTime.now());
         pedidoRepository.seed(pedido);
 
-        assertThrows(RuntimeException.class, () -> service.fechar(2L));
+        assertThrows(PedidoStatusInvalidoException.class, () -> service.fechar(2L));
     }
 
     private static class RecordingPedidoRepository implements PedidoRepository {

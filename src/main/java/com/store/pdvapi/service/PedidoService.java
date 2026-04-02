@@ -34,10 +34,7 @@ public class PedidoService {
 
     public PedidoResponse criar(CriarPedidoRequest request) {
         Mesa mesa = buscarMesa(request.getMesaId());
-
-        if (mesa.getStatus() != StatusMesa.OCUPADA) {
-            throw new MesaStatusInvalidoException("Só é possível abrir pedido em mesa ocupada");
-        }
+        validarMesaParaAbrirPedido(mesa);
 
         Pedido pedido = mapper.toEntity(request);
         pedido.setMesa(mesa);
@@ -71,10 +68,7 @@ public class PedidoService {
         if (pedido == null) {
             throw new PedidoNaoEncontradoException("Pedido não encontrado com id: " + id);
         }
-
-        if (pedido.getStatus() != StatusPedido.ABERTO) {
-            throw new PedidoStatusInvalidoException("Somente pedidos abertos podem ser fechados");
-        }
+        validarPedidoAbertoParaFechar(pedido);
 
         pedido.setStatus(StatusPedido.FECHADO);
         pedidoRepository.atualizar(pedido);
@@ -87,5 +81,17 @@ public class PedidoService {
             throw new MesaNaoEncontradaException("Mesa não encontrada com id: " + mesaId);
         }
         return mesa;
+    }
+
+    private void validarMesaParaAbrirPedido(Mesa mesa) {
+        if (mesa.getStatus() != StatusMesa.OCUPADA) {
+            throw new MesaStatusInvalidoException("Só é possível abrir pedido em mesa ocupada");
+        }
+    }
+
+    private void validarPedidoAbertoParaFechar(Pedido pedido) {
+        if (pedido.getStatus() != StatusPedido.ABERTO) {
+            throw new PedidoStatusInvalidoException("Somente pedidos abertos podem ser fechados");
+        }
     }
 }
