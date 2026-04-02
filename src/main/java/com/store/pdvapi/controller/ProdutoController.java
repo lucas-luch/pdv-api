@@ -2,6 +2,7 @@ package com.store.pdvapi.controller;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,7 @@ public class ProdutoController {
     @PostMapping
     public ProdutoResponse criar(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Payload com nome, preço e flag de ativo.", required = true)
-            @RequestBody CriarProdutoRequest request) {
+            @Valid @RequestBody CriarProdutoRequest request) {
         return service.criar(request);
     }
 
@@ -58,7 +59,7 @@ public class ProdutoController {
             @Parameter(description = "ID do produto a ser atualizado", required = true)
             @PathVariable Long id,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Dados atualizados do produto.")
-            @RequestBody AtualizarProdutoRequest request) {
+            @Valid @RequestBody AtualizarProdutoRequest request) {
         return service.atualizar(id, request);
     }
 

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +31,7 @@ public class ItemPedidoController {
                description = "Adiciona um produto ao pedido aberto definindo quantidade, preço e subtotal.")
     public ItemPedidoResponse adicionar(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pedido, produto e quantidade.")
-            @RequestBody CriarItemPedidoRequest request) {
+            @Valid @RequestBody CriarItemPedidoRequest request) {
         return service.adicionar(request);
     }
 
