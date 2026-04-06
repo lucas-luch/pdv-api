@@ -1,5 +1,6 @@
 package com.store.pdvapi.controller;
 
+import com.store.pdvapi.dto.error.ErroResponse;
 import com.store.pdvapi.dto.itempedido.ItemPedidoResponse;
 import com.store.pdvapi.dto.pedido.CriarPedidoRequest;
 import com.store.pdvapi.dto.pedido.PedidoResponse;
@@ -15,8 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -33,6 +38,11 @@ public class PedidoController {
     }
 
     @Operation(summary = "Criar pedido", description = "Abre um pedido para a mesa informada, assumindo que esteja ocupada.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos ou status da mesa incompatível para abertura do pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao criar o pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @PostMapping
     public PedidoResponse criar(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "ID da mesa que receberá o pedido.", required = true)
             @Valid @RequestBody CriarPedidoRequest request) {
@@ -40,6 +50,10 @@ public class PedidoController {
     }
 
     @Operation(summary = "Buscar pedido", description = "Retorna os dados do pedido identificado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido encontrado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Pedido não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao buscar o pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @GetMapping("/{id}")
     public PedidoResponse buscarPorId(
             @Parameter(description = "ID do pedido", required = true)
@@ -48,6 +62,9 @@ public class PedidoController {
     }
 
     @Operation(summary = "Listar pedidos por mesa", description = "Lista os pedidos vinculados à mesa informada.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedidos da mesa listados com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao listar os pedidos da mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @GetMapping("/mesa/{mesaId}")
     public List<PedidoResponse> listarPorMesa(
             @Parameter(description = "ID da mesa cujos pedidos devem ser listados", required = true)
@@ -56,6 +73,11 @@ public class PedidoController {
     }
 
     @Operation(summary = "Fechar pedido", description = "Finaliza o pedido e altera o status para fechado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedido fechado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Status do pedido inválido para fechamento", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Pedido não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao fechar o pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @PatchMapping("/{id}/fechar")
     public PedidoResponse fechar(
             @Parameter(description = "ID do pedido a ser fechado", required = true)
@@ -64,6 +86,10 @@ public class PedidoController {
     }
 
     @Operation(summary = "Listar itens do pedido", description = "Retorna os itens lançados no pedido informado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Itens do pedido listados com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Pedido não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao listar os itens do pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @GetMapping("/{id}/itens")
     public List<ItemPedidoResponse> listarItens(
             @Parameter(description = "ID do pedido cujos itens devem ser listados", required = true)
