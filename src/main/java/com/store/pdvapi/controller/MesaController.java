@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.store.pdvapi.dto.error.ErroResponse;
 import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
 import com.store.pdvapi.dto.mesa.MesaResponse;
@@ -19,8 +20,12 @@ import com.store.pdvapi.dto.pedido.PedidoResponse;
 import com.store.pdvapi.service.MesaService;
 import com.store.pdvapi.service.PedidoService;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -37,6 +42,10 @@ public class MesaController {
     }
 
     @Operation(summary = "Criar mesa", description = "Registra uma nova mesa no sistema.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Mesa criada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados da mesa inválidos ou número já cadastrado", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao criar a mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @PostMapping
     public MesaResponse criar(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Número e observações da mesa.", required = true)
             @Valid @RequestBody CriarMesaRequest request) {
@@ -50,6 +59,10 @@ public class MesaController {
     }
 
     @Operation(summary = "Calcular total da mesa", description = "Soma os subtotais dos itens de todos os pedidos da mesa.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Total da mesa calculado com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao calcular o total da mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @GetMapping("/{id}/total")
     public MesaTotalResponse total(
             @Parameter(description = "ID da mesa cujo total deve ser calculado", required = true)
@@ -58,6 +71,10 @@ public class MesaController {
     }
 
     @Operation(summary = "Listar pedidos da mesa", description = "Retorna os pedidos associados à mesa solicitada.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pedidos da mesa listados com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao listar os pedidos da mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @GetMapping("/{id}/pedidos")
     public List<PedidoResponse> listarPedidos(
             @Parameter(description = "ID da mesa cujos pedidos devem ser listados", required = true)
@@ -67,6 +84,10 @@ public class MesaController {
     }
 
     @Operation(summary = "Buscar mesa", description = "Retorna uma mesa específica pelo identificador.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Mesa encontrada com sucesso"),
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao buscar a mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @GetMapping("/{id}")
     public MesaResponse buscarPorId(
             @Parameter(description = "ID da mesa", required = true)
@@ -75,6 +96,11 @@ public class MesaController {
     }
 
     @Operation(summary = "Abrir mesa", description = "Marca a mesa como ocupada e opcionalmente registra uma observação.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Mesa aberta com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Status da mesa inválido para abertura", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao abrir a mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @PatchMapping("/{id}/abrir")
     public MesaResponse abrir(
             @Parameter(description = "ID da mesa a ser aberta", required = true)
@@ -85,6 +111,11 @@ public class MesaController {
     }
 
     @Operation(summary = "Fechar mesa", description = "Registra o fechamento de uma mesa e adiciona uma observação opcional.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Mesa fechada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Status da mesa inválido para fechamento", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao fechar a mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @PatchMapping("/{id}/fechar")
     public MesaResponse fechar(
             @Parameter(description = "ID da mesa a ser fechada", required = true)
@@ -95,6 +126,11 @@ public class MesaController {
     }
 
     @Operation(summary = "Liberar mesa", description = "Volta a mesa para o status livre.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Mesa liberada com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Status da mesa inválido para liberação", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Mesa não encontrada", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao liberar a mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
     @PatchMapping("/{id}/liberar")
     public MesaResponse liberar(
             @Parameter(description = "ID da mesa a ser liberada", required = true)
