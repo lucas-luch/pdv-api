@@ -17,9 +17,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 @Service
+@Validated
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
@@ -32,7 +35,7 @@ public class PedidoService {
         this.mapper = mapper;
     }
 
-    public PedidoResponse criar(CriarPedidoRequest request) {
+    public PedidoResponse criar(@Valid CriarPedidoRequest request) {
         Mesa mesa = buscarMesa(request.getMesaId());
         validarMesaParaAbrirPedido(mesa);
 
