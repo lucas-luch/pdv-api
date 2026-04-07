@@ -5,6 +5,7 @@ import com.store.pdvapi.dto.itempedido.CriarItemPedidoRequest;
 import com.store.pdvapi.dto.itempedido.ItemPedidoResponse;
 import com.store.pdvapi.service.ItemPedidoService;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,9 +37,12 @@ public class ItemPedidoController {
                description = "Adiciona um produto ao pedido aberto definindo quantidade, preço e subtotal.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Item adicionado ao pedido com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Dados inválidos, pedido fechado ou produto inativo", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Pedido ou produto não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Erro interno ao adicionar o item ao pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
+            @ApiResponse(responseCode = "400", description = "Dados inválidos, pedido fechado ou produto inativo", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ItemPedidoInvalido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Produto inativo nao pode ser adicionado ao pedido\",\"path\":\"/item-pedidos\"}"))),
+            @ApiResponse(responseCode = "404", description = "Pedido ou produto não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = {
+                    @ExampleObject(name = "PedidoNaoEncontradoItem", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Pedido nao encontrado com id: 1\",\"path\":\"/item-pedidos\"}"),
+                    @ExampleObject(name = "ProdutoNaoEncontradoItem", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Produto nao encontrado com id: 2\",\"path\":\"/item-pedidos\"}")
+            })),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao adicionar o item ao pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoItemPedido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao adicionar o item ao pedido\",\"path\":\"/item-pedidos\"}"))) })
     public ItemPedidoResponse adicionar(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pedido, produto e quantidade.")
             @Valid @RequestBody CriarItemPedidoRequest request) {
@@ -49,7 +53,7 @@ public class ItemPedidoController {
                description = "Retorna a lista de itens lançados em um pedido específico.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Itens do pedido listados com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Erro interno ao listar os itens do pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class))) })
+            @ApiResponse(responseCode = "500", description = "Erro interno ao listar os itens do pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoListaItensPedido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao listar os itens do pedido\",\"path\":\"/item-pedidos/pedido/1\"}"))) })
     @GetMapping("/pedido/{pedidoId}")
     public List<ItemPedidoResponse> listarPorPedido(
             @Parameter(description = "ID do pedido cujos itens serão listados", required = true)

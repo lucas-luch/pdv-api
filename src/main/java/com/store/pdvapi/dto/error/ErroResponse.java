@@ -16,10 +16,10 @@ public class ErroResponse {
     @Schema(description = "Motivo técnico do erro", example = "Recurso não encontrado")
     private String error;
 
-    @Schema(description = "Mensagem amigável explicando o problema", example = "Mesa não encontrada com id: 1")
+    @Schema(description = "Mensagem amigável explicando o problema")
     private String message;
 
-    @Schema(description = "Caminho da requisição que disparou o erro", example = "/mesas/1")
+    @Schema(description = "Caminho da requisição que disparou o erro")
     private String path;
 
     @Schema(description = "Lista opcional com detalhes dos campos inválidos")
