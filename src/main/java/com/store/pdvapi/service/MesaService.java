@@ -3,7 +3,9 @@ package com.store.pdvapi.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.store.pdvapi.dto.mesa.AtualizarStatusMesaRequest;
 import com.store.pdvapi.dto.mesa.CriarMesaRequest;
@@ -23,6 +25,7 @@ import com.store.pdvapi.repository.MesaRepository;
 import com.store.pdvapi.repository.PedidoRepository;
 
 @Service
+@Validated
 public class MesaService {
 
     private final MesaRepository repository;
@@ -39,7 +42,7 @@ public class MesaService {
         this.itemPedidoRepository = itemPedidoRepository;
     }
 
-    public MesaResponse criar(CriarMesaRequest request) {
+    public MesaResponse criar(@Valid CriarMesaRequest request) {
         String numero = validarNumero(request.getNumero());
 
         if (repository.buscarPorNumero(numero) != null) {

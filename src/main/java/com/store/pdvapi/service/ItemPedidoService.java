@@ -16,9 +16,12 @@ import com.store.pdvapi.repository.PedidoRepository;
 import com.store.pdvapi.repository.ProdutoRepository;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 @Service
+@Validated
 public class ItemPedidoService {
 
     private final ItemPedidoRepository repository;
@@ -36,7 +39,7 @@ public class ItemPedidoService {
         this.mapper = mapper;
     }
 
-    public ItemPedidoResponse adicionar(CriarItemPedidoRequest request) {
+    public ItemPedidoResponse adicionar(@Valid CriarItemPedidoRequest request) {
         Pedido pedido = buscarPedido(request.getPedidoId());
         validarPedidoAbertoParaAdicionarItem(pedido);
 

@@ -3,7 +3,9 @@ package com.store.pdvapi.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import com.store.pdvapi.dto.produto.AtualizarProdutoRequest;
 import com.store.pdvapi.dto.produto.CriarProdutoRequest;
@@ -15,6 +17,7 @@ import com.store.pdvapi.model.Produto;
 import com.store.pdvapi.repository.ProdutoRepository;
 
 @Service
+@Validated
 public class ProdutoService {
 
     private final ProdutoRepository repository;
@@ -25,7 +28,7 @@ public class ProdutoService {
         this.mapper = mapper;
     }
 
-    public ProdutoResponse criar(CriarProdutoRequest request) {
+    public ProdutoResponse criar(@Valid CriarProdutoRequest request) {
 
         Produto produto = mapper.toEntity(request);
         repository.salvar(produto);
@@ -48,7 +51,7 @@ public class ProdutoService {
         return responses;
     }
 
-    public ProdutoResponse atualizar(Long id, AtualizarProdutoRequest request) {
+    public ProdutoResponse atualizar(Long id, @Valid AtualizarProdutoRequest request) {
         Produto produto = buscarOuFalhar(id);
 
         produto.setNome(request.getNome());
