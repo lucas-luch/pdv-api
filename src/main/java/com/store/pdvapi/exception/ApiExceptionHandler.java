@@ -32,14 +32,19 @@ public class ApiExceptionHandler {
         return buildResponse(ex, HttpStatus.NOT_FOUND, request);
     }
 
+    @ExceptionHandler(ProdutoNaoEncontradoException.class)
+    public ResponseEntity<ErroResponse> handleProdutoNaoEncontrado(ProdutoNaoEncontradoException ex,
+            HttpServletRequest request) {
+        return buildResponse(ex, HttpStatus.NOT_FOUND, request);
+    }
+
     @ExceptionHandler({PedidoStatusInvalidoException.class})
     public ResponseEntity<ErroResponse> handlePedidoStatusInvalidos(PedidoStatusInvalidoException ex,
             HttpServletRequest request) {
         return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
 
-    @ExceptionHandler({ProdutoNaoEncontradoException.class, ProdutoInativoException.class,
-            ProdutoStatusInvalidoException.class})
+    @ExceptionHandler({ProdutoInativoException.class, ProdutoStatusInvalidoException.class})
     public ResponseEntity<ErroResponse> handleProdutoInvalidos(RuntimeException ex, HttpServletRequest request) {
         return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
