@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 set -euo pipefail
 
 PSQL="sudo -u postgres psql -d pdv"
