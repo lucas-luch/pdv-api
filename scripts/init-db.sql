@@ -1,0 +1,32 @@
+CREATE TABLE IF NOT EXISTS produto (
+  id BIGSERIAL PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  preco DOUBLE PRECISION NOT NULL,
+  ativo BOOLEAN NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS mesa (
+  id BIGSERIAL PRIMARY KEY,
+  numero VARCHAR(100) UNIQUE NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  observacao TEXT,
+  data_abertura TIMESTAMP,
+  data_fechamento TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS pedido (
+  id BIGSERIAL PRIMARY KEY,
+  mesa_id BIGINT NOT NULL REFERENCES mesa(id),
+  status VARCHAR(20) NOT NULL,
+  data_criacao DATE NOT NULL,
+  hora_criacao TIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS item_pedido (
+  id BIGSERIAL PRIMARY KEY,
+  pedido_id BIGINT NOT NULL REFERENCES pedido(id),
+  produto_id BIGINT NOT NULL REFERENCES produto(id),
+  quantidade INTEGER NOT NULL,
+  preco_unitario DOUBLE PRECISION NOT NULL,
+  subtotal DOUBLE PRECISION NOT NULL
+);
