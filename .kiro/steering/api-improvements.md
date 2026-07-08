@@ -37,7 +37,7 @@
 |--------|----------|-------------------|------------|
 | POST | `/pedidos` | 201 + Location | ✅ Corrigido |
 | GET | `/pedidos/{id}` | 200 / 404 | ✅ Correto |
-| GET | `/pedidos/mesa/{mesaId}` | 200 | ❌ Duplicado — já existe `/mesas/{id}/pedidos` |
+| GET | `/pedidos/mesa/{mesaId}` | ~~200~~ | ✅ Removido (duplicava `/mesas/{id}/pedidos`) |
 | PATCH | `/pedidos/{id}/fechar` | 200 / 400 | ⚠️ 400 deveria ser 409 |
 | GET | `/pedidos/{id}/itens` | 200 | ✅ Correto |
 
@@ -46,7 +46,7 @@
 | Método | Endpoint | Status Code Atual | Observação |
 |--------|----------|-------------------|------------|
 | POST | `/item-pedidos` | 201 + Location | ⚠️ Hierarquia errada (P3 pendente) |
-| GET | `/item-pedidos/pedido/{pedidoId}` | 200 | ❌ Duplicado — já existe `/pedidos/{id}/itens` |
+| GET | `/item-pedidos/pedido/{pedidoId}` | ~~200~~ | ✅ Removido (duplicava `/pedidos/{id}/itens`) |
 
 ---
 
@@ -74,7 +74,7 @@
 
 **Correção:** Remover `GET /pedidos/mesa/{mesaId}` e `GET /item-pedidos/pedido/{pedidoId}`. Manter apenas as rotas hierárquicas corretas.
 
-**Status:** [ ] Pendente
+**Status:** [x] Concluído
 
 ---
 

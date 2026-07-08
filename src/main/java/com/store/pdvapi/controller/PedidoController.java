@@ -66,17 +66,6 @@ public class PedidoController {
         return service.buscarPorId(id);
     }
 
-    @Operation(summary = "Listar pedidos por mesa", description = "Lista os pedidos vinculados à mesa informada.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pedidos da mesa listados com sucesso"),
-            @ApiResponse(responseCode = "500", description = "Erro interno ao listar os pedidos da mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoListaPedidosMesa", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao listar os pedidos da mesa\",\"path\":\"/pedidos/mesa/1\"}"))) })
-    @GetMapping("/mesa/{mesaId}")
-    public List<PedidoResponse> listarPorMesa(
-            @Parameter(description = "ID da mesa cujos pedidos devem ser listados", required = true)
-            @PathVariable Long mesaId) {
-        return service.listarPorMesa(mesaId);
-    }
-
     @Operation(summary = "Fechar pedido", description = "Finaliza o pedido e altera o status para fechado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Pedido fechado com sucesso"),
