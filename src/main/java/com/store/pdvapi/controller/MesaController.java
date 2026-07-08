@@ -1,8 +1,10 @@
 package com.store.pdvapi.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,13 +46,15 @@ public class MesaController {
 
     @Operation(summary = "Criar mesa", description = "Registra uma nova mesa no sistema.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Mesa criada com sucesso"),
+            @ApiResponse(responseCode = "201", description = "Mesa criada com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados da mesa inválidos ou número já cadastrado", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "MesaInvalida", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Numero da mesa ja cadastrado\",\"path\":\"/mesas\"}"))),
             @ApiResponse(responseCode = "500", description = "Erro interno ao criar a mesa", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoMesa", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao criar a mesa\",\"path\":\"/mesas\"}"))) })
     @PostMapping
-    public MesaResponse criar(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Número e observações da mesa.", required = true)
+    public ResponseEntity<MesaResponse> criar(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Número e observações da mesa.", required = true)
             @Valid @RequestBody CriarMesaRequest request) {
-        return service.criar(request);
+        MesaResponse response = service.criar(request);
+        URI location = URI.create("/mesas/" + response.getId());
+        return ResponseEntity.created(location).body(response);
     }
 
     @Operation(summary = "Listar mesas", description = "Retorna todas as mesas registradas com seus status.")

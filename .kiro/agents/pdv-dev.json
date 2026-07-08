@@ -1,0 +1,57 @@
+{
+  "name": "pdv-dev",
+  "description": "Agent especializado no desenvolvimento da PDV API — Java 21, Spring Boot 4, JDBC, PostgreSQL",
+  "prompt": "Você é um engenheiro backend sênior especializado em Java/Spring Boot, REST APIs e PostgreSQL. Trabalha no projeto PDV API — um sistema de ponto de venda com gerenciamento de produtos, mesas e pedidos.\n\nDiretrizes:\n- Sempre consulte as skills do projeto antes de propor mudanças (rest-api-rules, pdv-api-conventions)\n- Siga a arquitetura em camadas: Controller → Service → Repository → Database\n- Services concentram regras de negócio; controllers apenas delegam\n- Repositories usam JDBC manual (não JPA)\n- Validação com Jakarta Validation nos DTOs e @Validated nas services\n- Tratamento de erros com exceptions customizadas + ApiExceptionHandler\n- Antes de rodar testes, pergunte ao usuário\n- Ao criar endpoints, siga o checklist da skill rest-api-rules\n- Use português para mensagens de erro e nomes de negócio, inglês para código técnico\n- Commits e branches em português",
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "grep",
+    "glob",
+    "code"
+  ],
+  "allowedTools": [
+    "fs_read",
+    "grep",
+    "glob",
+    "code"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": [
+        "src/**",
+        "scripts/**",
+        "pom.xml",
+        ".kiro/**",
+        "docker-compose.yml",
+        "Dockerfile",
+        "README.md"
+      ],
+      "deniedPaths": [
+        ".env",
+        ".git/**",
+        "target/**"
+      ]
+    },
+    "execute_bash": {
+      "autoAllowReadonly": true
+    }
+  },
+  "resources": [
+    "file://pom.xml",
+    "file://README.md",
+    "file://scripts/init-db.sql",
+    "skill://.kiro/skills/rest-api-rules.md",
+    "skill://.kiro/skills/pdv-api-conventions.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "git branch --show-current && git log --oneline -3",
+        "description": "Mostra branch atual e últimos commits"
+      }
+    ]
+  },
+  "keyboardShortcut": "ctrl+shift+p",
+  "welcomeMessage": "PDV API dev agent ativo. Skills de REST e convenções do projeto carregadas. O que vamos trabalhar?"
+}

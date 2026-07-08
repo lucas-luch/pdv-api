@@ -1,8 +1,10 @@
 package com.store.pdvapi.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,14 +41,16 @@ public class ProdutoController {
 
     @Operation(summary = "Cadastrar produto", description = "Cria um novo produto e retorna sua representação.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Produto cadastrado com sucesso"),
+            @ApiResponse(responseCode = "201", description = "Produto cadastrado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados do produto inválidos", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ProdutoInvalido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Nome do produto e obrigatorio\",\"path\":\"/produtos\",\"details\":[\"nome: nao deve estar em branco\"]}"))),
             @ApiResponse(responseCode = "500", description = "Erro interno ao processar o cadastro do produto", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoProduto", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro ao cadastrar produto\",\"path\":\"/produtos\"}"))) })
     @PostMapping
-    public ProdutoResponse criar(
+    public ResponseEntity<ProdutoResponse> criar(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Payload com nome, preço e flag de ativo.", required = true)
             @Valid @RequestBody CriarProdutoRequest request) {
-        return service.criar(request);
+        ProdutoResponse response = service.criar(request);
+        URI location = URI.create("/produtos/" + response.getId());
+        return ResponseEntity.created(location).body(response);
     }
 
     @Operation(summary = "Buscar produto", description = "Retorna os dados completos de um produto pelo identificador.")

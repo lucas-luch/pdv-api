@@ -6,8 +6,10 @@ import com.store.pdvapi.dto.pedido.CriarPedidoRequest;
 import com.store.pdvapi.dto.pedido.PedidoResponse;
 import com.store.pdvapi.service.ItemPedidoService;
 import com.store.pdvapi.service.PedidoService;
+import java.net.URI;
 import java.util.List;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,14 +42,16 @@ public class PedidoController {
 
     @Operation(summary = "Criar pedido", description = "Abre um pedido para a mesa informada, assumindo que esteja ocupada.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Pedido criado com sucesso"),
+            @ApiResponse(responseCode = "201", description = "Pedido criado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos ou status da mesa incompatível para abertura do pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "PedidoInvalido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Status da mesa incompativel para abertura do pedido\",\"path\":\"/pedidos\"}"))),
             @ApiResponse(responseCode = "404", description = "Mesa não encontrada", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "MesaNaoEncontradaPedido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Mesa nao encontrada com id: 1\",\"path\":\"/pedidos\"}"))),
             @ApiResponse(responseCode = "500", description = "Erro interno ao criar o pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoCriacaoPedido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao criar o pedido\",\"path\":\"/pedidos\"}"))) })
     @PostMapping
-    public PedidoResponse criar(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "ID da mesa que receberá o pedido.", required = true)
+    public ResponseEntity<PedidoResponse> criar(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "ID da mesa que receberá o pedido.", required = true)
             @Valid @RequestBody CriarPedidoRequest request) {
-        return service.criar(request);
+        PedidoResponse response = service.criar(request);
+        URI location = URI.create("/pedidos/" + response.getId());
+        return ResponseEntity.created(location).body(response);
     }
 
     @Operation(summary = "Buscar pedido", description = "Retorna os dados do pedido identificado.")
