@@ -9,9 +9,9 @@ import org.springframework.validation.annotation.Validated;
 
 import com.store.pdvapi.dto.produto.AtualizarProdutoRequest;
 import com.store.pdvapi.dto.produto.CriarProdutoRequest;
+import com.store.pdvapi.dto.produto.PatchProdutoRequest;
 import com.store.pdvapi.dto.produto.ProdutoResponse;
 import com.store.pdvapi.exception.ProdutoNaoEncontradoException;
-import com.store.pdvapi.exception.ProdutoStatusInvalidoException;
 import com.store.pdvapi.mapper.ProdutoMapper;
 import com.store.pdvapi.model.Produto;
 import com.store.pdvapi.repository.ProdutoRepository;
@@ -63,23 +63,20 @@ public class ProdutoService {
         return mapper.toResponse(produto);
     }
 
-    public ProdutoResponse ativar(Long id) {
+    public ProdutoResponse atualizarParcial(Long id, @Valid PatchProdutoRequest request) {
         Produto produto = buscarOuFalhar(id);
-        validarProdutoInativoParaAtivar(produto);
 
-        produto.setAtivo(true);
+        if (request.getNome() != null) {
+            produto.setNome(request.getNome());
+        }
+        if (request.getPreco() != null) {
+            produto.setPreco(request.getPreco());
+        }
+        if (request.getAtivo() != null) {
+            produto.setAtivo(request.getAtivo());
+        }
+
         repository.atualizar(produto);
-
-        return mapper.toResponse(produto);
-    }
-
-    public ProdutoResponse inativar(Long id) {
-        Produto produto = buscarOuFalhar(id);
-        validarProdutoAtivoParaInativar(produto);
-
-        produto.setAtivo(false);
-        repository.atualizar(produto);
-
         return mapper.toResponse(produto);
     }
 
@@ -89,18 +86,6 @@ public class ProdutoService {
             throw new ProdutoNaoEncontradoException("Produto não encontrado com id: " + id);
         }
         return produto;
-    }
-
-    private void validarProdutoInativoParaAtivar(Produto produto) {
-        if (produto.isAtivo()) {
-            throw new ProdutoStatusInvalidoException("Produto já está ativo");
-        }
-    }
-
-    private void validarProdutoAtivoParaInativar(Produto produto) {
-        if (!produto.isAtivo()) {
-            throw new ProdutoStatusInvalidoException("Produto já está inativo");
-        }
     }
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.store.pdvapi.dto.error.ErroResponse;
 import com.store.pdvapi.dto.produto.AtualizarProdutoRequest;
 import com.store.pdvapi.dto.produto.CriarProdutoRequest;
+import com.store.pdvapi.dto.produto.PatchProdutoRequest;
 import com.store.pdvapi.dto.produto.ProdutoResponse;
 import com.store.pdvapi.service.ProdutoService;
 
@@ -86,30 +87,19 @@ public class ProdutoController {
         return service.atualizar(id, request);
     }
 
-    @Operation(summary = "Ativar produto", description = "Marca o produto como ativo sem alterar outros dados.")
+    @Operation(summary = "Atualizar produto parcialmente", description = "Atualiza apenas os campos informados no corpo da requisição.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Produto ativado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Status do produto inválido para ativação", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "StatusProdutoInvalidoAtivacao", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Produto ja esta ativo\",\"path\":\"/produtos/1/ativar\"}"))),
-            @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ProdutoNaoEncontradoAtivacao", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Produto nao encontrado com id: 1\",\"path\":\"/produtos/1/ativar\"}"))),
-            @ApiResponse(responseCode = "500", description = "Erro interno ao ativar o produto", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoAtivacaoProduto", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao ativar o produto\",\"path\":\"/produtos/1/ativar\"}"))) })
-    @PatchMapping("/{id}/ativar")
-    public ProdutoResponse ativar(
-            @Parameter(description = "ID do produto a ser ativado", required = true)
-            @PathVariable Long id) {
-        return service.ativar(id);
-    }
-
-    @Operation(summary = "Inativar produto", description = "Marca o produto como inativo.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Produto inativado com sucesso"),
-            @ApiResponse(responseCode = "400", description = "Status do produto inválido para inativação", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "StatusProdutoInvalidoInativacao", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Produto ja esta inativo\",\"path\":\"/produtos/1/inativar\"}"))),
-            @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ProdutoNaoEncontradoInativacao", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Produto nao encontrado com id: 1\",\"path\":\"/produtos/1/inativar\"}"))),
-            @ApiResponse(responseCode = "500", description = "Erro interno ao inativar o produto", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoInativacaoProduto", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao inativar o produto\",\"path\":\"/produtos/1/inativar\"}"))) })
-    @PatchMapping("/{id}/inativar")
-    public ProdutoResponse inativar(
-            @Parameter(description = "ID do produto a ser inativado", required = true)
-            @PathVariable Long id) {
-        return service.inativar(id);
+            @ApiResponse(responseCode = "200", description = "Produto atualizado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados do produto inválidos", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "PatchProdutoInvalido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Preco do produto deve ser maior que zero\",\"path\":\"/produtos/1\",\"details\":[\"preco: deve ser maior que zero\"]}"))),
+            @ApiResponse(responseCode = "404", description = "Produto não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ProdutoNaoEncontradoPatch", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Produto nao encontrado com id: 1\",\"path\":\"/produtos/1\"}"))),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao atualizar o produto", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoPatchProduto", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao atualizar o produto\",\"path\":\"/produtos/1\"}"))) })
+    @PatchMapping("/{id}")
+    public ProdutoResponse atualizarParcial(
+            @Parameter(description = "ID do produto a ser atualizado", required = true)
+            @PathVariable Long id,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Campos a serem atualizados. Ex: {\"ativo\": false} ou {\"preco\": 12.5}")
+            @Valid @RequestBody PatchProdutoRequest request) {
+        return service.atualizarParcial(id, request);
     }
 
 }

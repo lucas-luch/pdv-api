@@ -15,8 +15,8 @@
 | GET | `/produtos` | 200 | ✅ Correto |
 | GET | `/produtos/{id}` | 200 / 404 | ✅ Correto |
 | PUT | `/produtos/{id}` | 200 | ✅ Correto |
-| PATCH | `/produtos/{id}/ativar` | 200 | ⚠️ Redundante com PUT |
-| PATCH | `/produtos/{id}/inativar` | 200 | ⚠️ Redundante com PUT |
+| PATCH | `/produtos/{id}/ativar` | ~~200~~ | ✅ Removido — substituído por PATCH /{id} |
+| PATCH | `/produtos/{id}/inativar` | ~~200~~ | ✅ Removido — substituído por PATCH /{id} |
 
 ### MesaController (`/mesas`)
 
@@ -45,7 +45,7 @@
 
 | Método | Endpoint | Status Code Atual | Observação |
 |--------|----------|-------------------|------------|
-| POST | `/item-pedidos` | 201 + Location | ⚠️ Hierarquia errada (P3 pendente) |
+| POST | `/item-pedidos` | ~~201~~ | ✅ Movido para `POST /pedidos/{id}/itens` |
 | GET | `/item-pedidos/pedido/{pedidoId}` | ~~200~~ | ✅ Removido (duplicava `/pedidos/{id}/itens`) |
 
 ---
@@ -86,7 +86,7 @@
 
 **Correção:** Mover a criação de item para `POST /pedidos/{pedidoId}/itens` dentro do PedidoController (ou um controller dedicado nesse path). Remover `pedidoId` do body do request. Avaliar se o `ItemPedidoController` top-level ainda precisa existir.
 
-**Status:** [ ] Pendente
+**Status:** [x] Concluído
 
 ---
 
@@ -100,9 +100,9 @@
 - Opção A: Remover ambos e usar apenas PUT para alterar o campo `ativo`.
 - Opção B: Manter se houver intenção de adicionar regras diferentes (ex: inativar bloqueia pedidos em aberto). Nesse caso, documentar a justificativa.
 
-**Decisão:** A definir — avaliar se existem side-effects planejados.
+**Decisão:** Removidos. Substituídos por `PATCH /produtos/{id}` com body parcial (ex: `{"ativo": false}`). PUT mantido para atualização completa.
 
-**Status:** [ ] Pendente
+**Status:** [x] Concluído
 
 ---
 
