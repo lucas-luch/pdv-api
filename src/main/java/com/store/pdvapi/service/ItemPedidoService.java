@@ -39,8 +39,8 @@ public class ItemPedidoService {
         this.mapper = mapper;
     }
 
-    public ItemPedidoResponse adicionar(@Valid CriarItemPedidoRequest request) {
-        Pedido pedido = buscarPedido(request.getPedidoId());
+    public ItemPedidoResponse adicionar(Long pedidoId, @Valid CriarItemPedidoRequest request) {
+        Pedido pedido = buscarPedido(pedidoId);
         validarPedidoAbertoParaAdicionarItem(pedido);
 
         Produto produto = produtoRepository.buscarPorId(request.getProdutoId());

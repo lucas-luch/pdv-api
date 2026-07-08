@@ -47,11 +47,10 @@ class ItemPedidoServiceTest {
         produtoRepository.seed(produto);
 
         CriarItemPedidoRequest request = new CriarItemPedidoRequest();
-        request.setPedidoId(1L);
         request.setProdutoId(1L);
         request.setQuantidade(2);
 
-        ItemPedidoResponse response = service.adicionar(request);
+        ItemPedidoResponse response = service.adicionar(1L, request);
 
         assertEquals(1L, response.getPedidoId());
         assertEquals(1L, response.getProdutoId());
@@ -63,11 +62,10 @@ class ItemPedidoServiceTest {
     @Test
     void adicionar_quandoPedidoNaoEncontrado_lancaPedidoNaoEncontradoException() {
         CriarItemPedidoRequest request = new CriarItemPedidoRequest();
-        request.setPedidoId(99L);
         request.setProdutoId(1L);
         request.setQuantidade(1);
 
-        assertThrows(PedidoNaoEncontradoException.class, () -> service.adicionar(request));
+        assertThrows(PedidoNaoEncontradoException.class, () -> service.adicionar(99L, request));
     }
 
     @Test
@@ -75,11 +73,10 @@ class ItemPedidoServiceTest {
         Pedido pedido = new Pedido(2L, new Mesa(1L, "01", StatusMesa.OCUPADA, null), StatusPedido.FECHADO, null, null);
         pedidoRepository.seed(pedido);
         CriarItemPedidoRequest request = new CriarItemPedidoRequest();
-        request.setPedidoId(2L);
         request.setProdutoId(1L);
         request.setQuantidade(1);
 
-        assertThrows(PedidoStatusInvalidoException.class, () -> service.adicionar(request));
+        assertThrows(PedidoStatusInvalidoException.class, () -> service.adicionar(2L, request));
     }
 
     @Test
@@ -89,11 +86,10 @@ class ItemPedidoServiceTest {
         Produto produto = new Produto(2L, "Fanta", 8.0, false);
         produtoRepository.seed(produto);
         CriarItemPedidoRequest request = new CriarItemPedidoRequest();
-        request.setPedidoId(3L);
         request.setProdutoId(2L);
         request.setQuantidade(1);
 
-        assertThrows(ProdutoInativoException.class, () -> service.adicionar(request));
+        assertThrows(ProdutoInativoException.class, () -> service.adicionar(3L, request));
     }
 
     @Test
@@ -103,10 +99,9 @@ class ItemPedidoServiceTest {
         Produto produto = new Produto(3L, "Suco", 5.0, true);
         produtoRepository.seed(produto);
         CriarItemPedidoRequest request = new CriarItemPedidoRequest();
-        request.setPedidoId(4L);
         request.setProdutoId(3L);
         request.setQuantidade(2);
-        service.adicionar(request);
+        service.adicionar(4L, request);
 
         List<ItemPedidoResponse> responses = service.listarPorPedido(4L);
 

@@ -3,7 +3,6 @@ package com.store.pdvapi.mapper;
 import com.store.pdvapi.dto.itempedido.CriarItemPedidoRequest;
 import com.store.pdvapi.dto.itempedido.ItemPedidoResponse;
 import com.store.pdvapi.model.ItemPedido;
-import com.store.pdvapi.model.Pedido;
 import com.store.pdvapi.model.Produto;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +11,6 @@ public class ItemPedidoMapper {
 
     public ItemPedido toEntity(CriarItemPedidoRequest request) {
         ItemPedido item = new ItemPedido();
-        Pedido pedido = new Pedido();
-        pedido.setId(request.getPedidoId());
-        item.setPedido(pedido);
         Produto produto = new Produto();
         produto.setId(request.getProdutoId());
         item.setProduto(produto);

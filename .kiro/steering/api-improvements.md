@@ -45,7 +45,7 @@
 
 | Método | Endpoint | Status Code Atual | Observação |
 |--------|----------|-------------------|------------|
-| POST | `/item-pedidos` | 201 + Location | ⚠️ Hierarquia errada (P3 pendente) |
+| POST | `/item-pedidos` | ~~201~~ | ✅ Movido para `POST /pedidos/{id}/itens` |
 | GET | `/item-pedidos/pedido/{pedidoId}` | ~~200~~ | ✅ Removido (duplicava `/pedidos/{id}/itens`) |
 
 ---
@@ -86,7 +86,7 @@
 
 **Correção:** Mover a criação de item para `POST /pedidos/{pedidoId}/itens` dentro do PedidoController (ou um controller dedicado nesse path). Remover `pedidoId` do body do request. Avaliar se o `ItemPedidoController` top-level ainda precisa existir.
 
-**Status:** [ ] Pendente
+**Status:** [x] Concluído
 
 ---
 

@@ -1,6 +1,7 @@
 package com.store.pdvapi.controller;
 
 import com.store.pdvapi.dto.error.ErroResponse;
+import com.store.pdvapi.dto.itempedido.CriarItemPedidoRequest;
 import com.store.pdvapi.dto.itempedido.ItemPedidoResponse;
 import com.store.pdvapi.dto.pedido.CriarPedidoRequest;
 import com.store.pdvapi.dto.pedido.PedidoResponse;
@@ -77,6 +78,26 @@ public class PedidoController {
             @Parameter(description = "ID do pedido a ser fechado", required = true)
             @PathVariable Long id) {
         return service.fechar(id);
+    }
+
+    @Operation(summary = "Adicionar item ao pedido", description = "Adiciona um produto ao pedido aberto definindo quantidade, preço e subtotal.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Item adicionado ao pedido com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos, pedido fechado ou produto inativo", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ItemPedidoInvalido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Produto inativo nao pode ser adicionado ao pedido\",\"path\":\"/pedidos/1/itens\"}"))),
+            @ApiResponse(responseCode = "404", description = "Pedido ou produto não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = {
+                    @ExampleObject(name = "PedidoNaoEncontradoItem", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Pedido nao encontrado com id: 1\",\"path\":\"/pedidos/1/itens\"}"),
+                    @ExampleObject(name = "ProdutoNaoEncontradoItem", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Produto nao encontrado com id: 2\",\"path\":\"/pedidos/1/itens\"}")
+            })),
+            @ApiResponse(responseCode = "500", description = "Erro interno ao adicionar o item ao pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoItemPedido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao adicionar o item ao pedido\",\"path\":\"/pedidos/1/itens\"}"))) })
+    @PostMapping("/{pedidoId}/itens")
+    public ResponseEntity<ItemPedidoResponse> adicionarItem(
+            @Parameter(description = "ID do pedido que receberá o item", required = true)
+            @PathVariable Long pedidoId,
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Produto e quantidade.")
+            @Valid @RequestBody CriarItemPedidoRequest request) {
+        ItemPedidoResponse response = itemPedidoService.adicionar(pedidoId, request);
+        URI location = URI.create("/pedidos/" + pedidoId + "/itens/" + response.getId());
+        return ResponseEntity.created(location).body(response);
     }
 
     @Operation(summary = "Listar itens do pedido", description = "Retorna os itens lançados no pedido informado.")
