@@ -21,7 +21,12 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler({MesaStatusInvalidoException.class, MesaNumeroDuplicadoException.class,
-            MesaNumeroObrigatorioException.class})
+            PedidoStatusInvalidoException.class})
+    public ResponseEntity<ErroResponse> handleConflito(RuntimeException ex, HttpServletRequest request) {
+        return buildResponse(ex, HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(MesaNumeroObrigatorioException.class)
     public ResponseEntity<ErroResponse> handleMesaInvalidas(RuntimeException ex, HttpServletRequest request) {
         return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
@@ -36,12 +41,6 @@ public class ApiExceptionHandler {
     public ResponseEntity<ErroResponse> handleProdutoNaoEncontrado(ProdutoNaoEncontradoException ex,
             HttpServletRequest request) {
         return buildResponse(ex, HttpStatus.NOT_FOUND, request);
-    }
-
-    @ExceptionHandler({PedidoStatusInvalidoException.class})
-    public ResponseEntity<ErroResponse> handlePedidoStatusInvalidos(PedidoStatusInvalidoException ex,
-            HttpServletRequest request) {
-        return buildResponse(ex, HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(ProdutoInativoException.class)
