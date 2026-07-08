@@ -27,9 +27,9 @@
 | GET | `/mesas/{id}` | 200 / 404 | ✅ Correto |
 | GET | `/mesas/{id}/total` | 200 | ✅ Correto |
 | GET | `/mesas/{id}/pedidos` | 200 | ✅ Correto |
-| PATCH | `/mesas/{id}/abrir` | 200 / 400 | ⚠️ 400 deveria ser 409 |
-| PATCH | `/mesas/{id}/fechar` | 200 / 400 | ⚠️ 400 deveria ser 409 |
-| PATCH | `/mesas/{id}/liberar` | 200 / 400 | ⚠️ 400 deveria ser 409 |
+| PATCH | `/mesas/{id}/abrir` | 200 / 409 | ✅ Corrigido |
+| PATCH | `/mesas/{id}/fechar` | 200 / 409 | ✅ Corrigido |
+| PATCH | `/mesas/{id}/liberar` | 200 / 409 | ✅ Corrigido |
 
 ### PedidoController (`/pedidos`)
 
@@ -38,7 +38,7 @@
 | POST | `/pedidos` | 201 + Location | ✅ Corrigido |
 | GET | `/pedidos/{id}` | 200 / 404 | ✅ Correto |
 | GET | `/pedidos/mesa/{mesaId}` | ~~200~~ | ✅ Removido (duplicava `/mesas/{id}/pedidos`) |
-| PATCH | `/pedidos/{id}/fechar` | 200 / 400 | ⚠️ 400 deveria ser 409 |
+| PATCH | `/pedidos/{id}/fechar` | 200 / 409 | ✅ Corrigido |
 | GET | `/pedidos/{id}/itens` | 200 | ✅ Correto |
 
 ### ItemPedidoController (`/item-pedidos`)
@@ -120,7 +120,7 @@
 
 **Correção:** Alterar as exceptions de status inválido para retornar 409 no `ApiExceptionHandler`.
 
-**Status:** [ ] Pendente
+**Status:** [x] Concluído
 
 ---
 
