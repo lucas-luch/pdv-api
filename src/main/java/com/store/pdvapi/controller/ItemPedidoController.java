@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.net.URI;
 import java.util.List;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,17 +38,19 @@ public class ItemPedidoController {
     @Operation(summary = "Adicionar item ao pedido",
                description = "Adiciona um produto ao pedido aberto definindo quantidade, preço e subtotal.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Item adicionado ao pedido com sucesso"),
+            @ApiResponse(responseCode = "201", description = "Item adicionado ao pedido com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos, pedido fechado ou produto inativo", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ItemPedidoInvalido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":400,\"error\":\"Bad Request\",\"message\":\"Produto inativo nao pode ser adicionado ao pedido\",\"path\":\"/item-pedidos\"}"))),
             @ApiResponse(responseCode = "404", description = "Pedido ou produto não encontrado", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = {
                     @ExampleObject(name = "PedidoNaoEncontradoItem", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Pedido nao encontrado com id: 1\",\"path\":\"/item-pedidos\"}"),
                     @ExampleObject(name = "ProdutoNaoEncontradoItem", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":404,\"error\":\"Not Found\",\"message\":\"Produto nao encontrado com id: 2\",\"path\":\"/item-pedidos\"}")
             })),
             @ApiResponse(responseCode = "500", description = "Erro interno ao adicionar o item ao pedido", content = @Content(schema = @Schema(implementation = ErroResponse.class), examples = @ExampleObject(name = "ErroInternoItemPedido", value = "{\"timestamp\":\"2026-04-01T20:12:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"Erro interno ao adicionar o item ao pedido\",\"path\":\"/item-pedidos\"}"))) })
-    public ItemPedidoResponse adicionar(
+    public ResponseEntity<ItemPedidoResponse> adicionar(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Pedido, produto e quantidade.")
             @Valid @RequestBody CriarItemPedidoRequest request) {
-        return service.adicionar(request);
+        ItemPedidoResponse response = service.adicionar(request);
+        URI location = URI.create("/item-pedidos/" + response.getId());
+        return ResponseEntity.created(location).body(response);
     }
 
     @Operation(summary = "Listar itens por pedido",

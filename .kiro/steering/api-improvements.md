@@ -11,7 +11,7 @@
 
 | Método | Endpoint | Status Code Atual | Observação |
 |--------|----------|-------------------|------------|
-| POST | `/produtos` | 200 | ⚠️ Deveria ser 201 + Location |
+| POST | `/produtos` | 201 + Location | ✅ Corrigido |
 | GET | `/produtos` | 200 | ✅ Correto |
 | GET | `/produtos/{id}` | 200 / 404 | ✅ Correto |
 | PUT | `/produtos/{id}` | 200 | ✅ Correto |
@@ -22,7 +22,7 @@
 
 | Método | Endpoint | Status Code Atual | Observação |
 |--------|----------|-------------------|------------|
-| POST | `/mesas` | 200 | ⚠️ Deveria ser 201 + Location |
+| POST | `/mesas` | 201 + Location | ✅ Corrigido |
 | GET | `/mesas` | 200 | ✅ Correto |
 | GET | `/mesas/{id}` | 200 / 404 | ✅ Correto |
 | GET | `/mesas/{id}/total` | 200 | ✅ Correto |
@@ -35,7 +35,7 @@
 
 | Método | Endpoint | Status Code Atual | Observação |
 |--------|----------|-------------------|------------|
-| POST | `/pedidos` | 200 | ⚠️ Deveria ser 201 + Location |
+| POST | `/pedidos` | 201 + Location | ✅ Corrigido |
 | GET | `/pedidos/{id}` | 200 / 404 | ✅ Correto |
 | GET | `/pedidos/mesa/{mesaId}` | 200 | ❌ Duplicado — já existe `/mesas/{id}/pedidos` |
 | PATCH | `/pedidos/{id}/fechar` | 200 / 400 | ⚠️ 400 deveria ser 409 |
@@ -45,7 +45,7 @@
 
 | Método | Endpoint | Status Code Atual | Observação |
 |--------|----------|-------------------|------------|
-| POST | `/item-pedidos` | 200 | ❌ Hierarquia errada + status 200 |
+| POST | `/item-pedidos` | 201 + Location | ⚠️ Hierarquia errada (P3 pendente) |
 | GET | `/item-pedidos/pedido/{pedidoId}` | 200 | ❌ Duplicado — já existe `/pedidos/{id}/itens` |
 
 ---
@@ -60,7 +60,7 @@
 
 **Correção:** Alterar retorno dos controllers para `ResponseEntity.created(location).body(response)`.
 
-**Status:** [ ] Pendente
+**Status:** [x] Concluído
 
 ---
 
@@ -132,7 +132,7 @@
 
 **Correção:** Será resolvido junto com P1 (alterar retorno para ResponseEntity nos métodos de criação). Métodos GET que retornam 200 podem permanecer retornando DTO diretamente — é questão de estilo.
 
-**Status:** [ ] Será resolvido com P1
+**Status:** [x] Resolvido com P1
 
 ---
 
