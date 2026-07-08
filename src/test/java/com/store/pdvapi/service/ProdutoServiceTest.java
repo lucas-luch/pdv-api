@@ -14,8 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.store.pdvapi.dto.produto.CriarProdutoRequest;
+import com.store.pdvapi.dto.produto.PatchProdutoRequest;
 import com.store.pdvapi.exception.ProdutoNaoEncontradoException;
-import com.store.pdvapi.exception.ProdutoStatusInvalidoException;
 import com.store.pdvapi.mapper.ProdutoMapper;
 import com.store.pdvapi.model.Produto;
 import com.store.pdvapi.repository.ProdutoRepository;
@@ -69,19 +69,41 @@ class ProdutoServiceTest {
     }
 
     @Test
-    void ativar_quandoProdutoJaEstiverAtivo_lancaProdutoStatusInvalido() {
+    void atualizarParcial_quandoEnviarAtivoFalse_deveInativarProduto() {
         Produto produto = new Produto(2L, "Suco", 7.5, true);
         repository.seed(produto);
 
-        assertThrows(ProdutoStatusInvalidoException.class, () -> service.ativar(2L));
+        PatchProdutoRequest request = new PatchProdutoRequest();
+        request.setAtivo(false);
+
+        var resposta = service.atualizarParcial(2L, request);
+
+        assertFalse(resposta.isAtivo());
+        assertEquals("Suco", resposta.getNome());
+        assertEquals(7.5, resposta.getPreco(), 0.0001);
     }
 
     @Test
-    void inativar_quandoProdutoJaEstiverInativo_lancaProdutoStatusInvalido() {
-        Produto produto = new Produto(3L, "Água", 3.0, false);
+    void atualizarParcial_quandoEnviarPreco_deveAlterarApenasPreco() {
+        Produto produto = new Produto(3L, "Água", 3.0, true);
         repository.seed(produto);
 
-        assertThrows(ProdutoStatusInvalidoException.class, () -> service.inativar(3L));
+        PatchProdutoRequest request = new PatchProdutoRequest();
+        request.setPreco(4.5);
+
+        var resposta = service.atualizarParcial(3L, request);
+
+        assertEquals(4.5, resposta.getPreco(), 0.0001);
+        assertEquals("Água", resposta.getNome());
+        assertTrue(resposta.isAtivo());
+    }
+
+    @Test
+    void atualizarParcial_quandoProdutoNaoExistir_lancaProdutoNaoEncontrado() {
+        PatchProdutoRequest request = new PatchProdutoRequest();
+        request.setAtivo(true);
+
+        assertThrows(ProdutoNaoEncontradoException.class, () -> service.atualizarParcial(99L, request));
     }
 
     private static class RecordingProdutoRepository implements ProdutoRepository {

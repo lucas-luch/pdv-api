@@ -15,8 +15,8 @@
 | GET | `/produtos` | 200 | ✅ Correto |
 | GET | `/produtos/{id}` | 200 / 404 | ✅ Correto |
 | PUT | `/produtos/{id}` | 200 | ✅ Correto |
-| PATCH | `/produtos/{id}/ativar` | 200 | ⚠️ Redundante com PUT |
-| PATCH | `/produtos/{id}/inativar` | 200 | ⚠️ Redundante com PUT |
+| PATCH | `/produtos/{id}/ativar` | ~~200~~ | ✅ Removido — substituído por PATCH /{id} |
+| PATCH | `/produtos/{id}/inativar` | ~~200~~ | ✅ Removido — substituído por PATCH /{id} |
 
 ### MesaController (`/mesas`)
 
@@ -100,9 +100,9 @@
 - Opção A: Remover ambos e usar apenas PUT para alterar o campo `ativo`.
 - Opção B: Manter se houver intenção de adicionar regras diferentes (ex: inativar bloqueia pedidos em aberto). Nesse caso, documentar a justificativa.
 
-**Decisão:** A definir — avaliar se existem side-effects planejados.
+**Decisão:** Removidos. Substituídos por `PATCH /produtos/{id}` com body parcial (ex: `{"ativo": false}`). PUT mantido para atualização completa.
 
-**Status:** [ ] Pendente
+**Status:** [x] Concluído
 
 ---
 
